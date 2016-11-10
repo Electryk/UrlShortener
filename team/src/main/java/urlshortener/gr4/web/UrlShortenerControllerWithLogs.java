@@ -9,6 +9,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.File;
+import java.io.IOException;
+import com.maxmind.geoip.Location;
+import com.maxmind.geoip.LookupService;
+
 import javax.servlet.http.HttpServletRequest;
 
 import urlshortener.common.domain.ShortURL;
@@ -31,6 +36,29 @@ public class UrlShortenerControllerWithLogs extends UrlShortenerController {
 											  @RequestParam(value = "sponsor", required = false) String sponsor,
 											  HttpServletRequest request) {
 		logger.info("Requested new short for uri " + url);
+		logger.info("IP CLIENT - " + request.getRemoteAddr());
+		getLatLngByIp(request.getRemoteAddr());
 		return super.shortener(url, sponsor, request);
+	}
+	
+	private void getLatLngByIp(String ip) {
+		ClassLoader classLoader = getClass().getClassLoader();
+		File file = new File(classLoader.getResource("location/GeoLiteCity.dat").getFile());
+		try {
+	
+			LookupService lookup = new LookupService(file, LookupService.GEOIP_MEMORY_CACHE);
+			Location locationServices = lookup.getLocation("155.210.224.201");
+			
+			logger.info(ip);
+			logger.info("" + locationServices);
+			if (locationServices != null) {
+				logger.info(String.valueOf(locationServices.latitude));
+				logger.info(String.valueOf(locationServices.longitude));
+				logger.info(locationServices.city);
+				logger.info(locationServices.countryName);
+			}
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+		}
 	}
 }
