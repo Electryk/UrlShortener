@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;team/src/test/java/urlshortener/demo&apos; to &apos;gr4&apos;" description="Rename resource &apos;demo&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="src/test/java/urlshortener/demo" name="gr4" stamp="1478776634967" updateReferences="true"/>
+</session>
