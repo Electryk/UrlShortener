@@ -70,7 +70,7 @@ public class UrlShortenerController {
 	}
 
 	@RequestMapping(value = "/link", method = RequestMethod.POST)
-	public ResponseEntity<ShortURL> shortener(@RequestParam("ip") String url,
+	public ResponseEntity<ShortURL> shortener(@RequestParam("url") String url,
 											  @RequestParam(value = "sponsor", required = false) String sponsor,
 											  HttpServletRequest request) {
 		ShortURL su = createAndSaveIfValid(url, sponsor, UUID
