@@ -2,19 +2,20 @@ package urlshortener.gr4.web;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.io.File;
-import java.io.IOException;
-import com.maxmind.geoip.Location;
-import com.maxmind.geoip.LookupService;
+import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import urlshortener.common.domain.ShortURL;
 import urlshortener.common.web.UrlShortenerController;
@@ -35,30 +36,36 @@ public class UrlShortenerControllerWithLogs extends UrlShortenerController {
 	public ResponseEntity<ShortURL> shortener(@RequestParam("url") String url,
 											  @RequestParam(value = "sponsor", required = false) String sponsor,
 											  HttpServletRequest request) {
-		logger.info("Requested new short for uri " + url);
-		logger.info("IP CLIENT - " + request.getRemoteAddr());
-		getLatLngByIp(request.getRemoteAddr());
+		logger.info("Requested new short for uri " + url);		
 		return super.shortener(url, sponsor, request);
 	}
 	
-	private void getLatLngByIp(String ip) {
-		ClassLoader classLoader = getClass().getClassLoader();
-		File file = new File(classLoader.getResource("location/GeoLiteCity.dat").getFile());
-		try {
+	@RequestMapping(value = "/publicIp", method = RequestMethod.POST)
+	public ResponseEntity<String> getPublicIp(@RequestParam String ip,
+											  HttpServletRequest request) {
+		JSONObject obj = getLocationByIP(ip);
+		return new ResponseEntity<String>(obj.toString(), HttpStatus.CREATED);
+	}
 	
-			LookupService lookup = new LookupService(file, LookupService.GEOIP_MEMORY_CACHE);
-			Location locationServices = lookup.getLocation("155.210.224.201");
+	private JSONObject getLocationByIP(String ip) {
+		JSONObject obj = null;
+		try {
+			//Get LAT, LNG and other info associated with this ip.
+			RestTemplate restTemplate = new RestTemplate();
+			ResponseEntity<String> response = restTemplate.getForEntity(
+			        "http://ip-api.com/json/" + ip, String.class);
 			
-			logger.info(ip);
-			logger.info("" + locationServices);
-			if (locationServices != null) {
-				logger.info(String.valueOf(locationServices.latitude));
-				logger.info(String.valueOf(locationServices.longitude));
-				logger.info(locationServices.city);
-				logger.info(locationServices.countryName);
-			}
-		} catch (IOException e) {
-			System.err.println(e.getMessage());
+			//Save the result in JSON Object
+			obj = new JSONObject(response.getBody());
+			obj.put("ip", ip);
+			logger.info(obj.toString());
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
+		return obj;
+		
 	}
 }
