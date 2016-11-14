@@ -10,7 +10,7 @@ public interface LocationRepository {
 
 	Location save(Location loc);
 
-	void update(Location loc);
+	int update(Location loc);
 
 	void delete(Long id);
 

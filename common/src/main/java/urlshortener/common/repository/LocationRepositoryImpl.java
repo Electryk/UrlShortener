@@ -32,9 +32,9 @@ public class LocationRepositoryImpl implements LocationRepository {
 	private static final RowMapper<Location> rowMapper = new RowMapper<Location>() {
 		@Override
 		public Location mapRow(ResultSet rs, int rowNum) throws SQLException {
-			return new Location(rs.getString("shortURL"), rs.getString("city"), rs.getString("country"),
-					rs.getString("lat"), rs.getString("lon"), rs.getString("ip"),
-					rs.getString("regionName"), rs.getString("org"), rs.getLong("id"));
+			return new Location(rs.getString("hash"), rs.getString("city"), rs.getString("country"),
+					rs.getString("lat"), rs.getString("lng"), rs.getString("ip"),
+					rs.getString("region"), rs.getString("organization"), rs.getLong("id"));
 		}
 	};
 
@@ -51,7 +51,7 @@ public class LocationRepositoryImpl implements LocationRepository {
 	@Override
 	public List<Location> findByHash(String hash) {
 		try {
-			return jdbc.query("SELECT * FROM location WHERE hash=?",
+			return jdbc.query("SELECT * FROM LOCATION WHERE hash=?",
 					new Object[] { hash }, rowMapper);
 		} catch (Exception e) {
 			log.debug("When select for hash " + hash, e);
@@ -97,10 +97,11 @@ public class LocationRepositoryImpl implements LocationRepository {
 	}
 
 	@Override
-	public void update(Location location) {
+	public int update(Location location) {
 		log.info(location.toString());
+		int numRowsUpdated = 0;
 		try {
-			jdbc.update(
+			numRowsUpdated = jdbc.update(
 					"update location set hash=?, city=?, country=?, ip=?, lat=?, lng=?, region=?, organization=? where id=?",
 					location.getShortURL(), location.getCity(), location.getCountry(),
 					location.getIp(), location.getLatitude(), location.getLongitude(),
@@ -109,6 +110,8 @@ public class LocationRepositoryImpl implements LocationRepository {
 		} catch (Exception e) {
 			log.info("When update for id " + location.getId(), e);
 		}
+		
+		return numRowsUpdated;
 	}
 
 	@Override
