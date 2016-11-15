@@ -21,5 +21,7 @@ public interface ShortURLRepository {
 	Long count();
 
 	List<ShortURL> list(Long limit, Long offset);
+	
+	void incCount(ShortURL su);
 
 }
