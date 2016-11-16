@@ -48,7 +48,7 @@ public class UrlShortenerControllerWithLogs extends UrlShortenerController {
 		logger.info("IP := " + ip);
 		
 		//IP PUBLICA DE PRUEBA = 155.210.211.33
-		JSONObject locationIp = getLocationByIP("155.210.211.33");
+		JSONObject locationIp = getLocationByIP(request.getRemoteAddr());
 		//JSONObject locationIp = getLocationByIP(request.getRemoteAddr());
 		
 		createAndSaveLocation(id, locationIp);
@@ -63,7 +63,7 @@ public class UrlShortenerControllerWithLogs extends UrlShortenerController {
 		return super.shortener(url, sponsor, request);
 	}
 	
-	private JSONObject getLocationByIP(String ip) {
+	public JSONObject getLocationByIP(String ip) {
 		JSONObject obj = null;
 		try {
 			//Get LAT, LNG and other info associated with this ip.
