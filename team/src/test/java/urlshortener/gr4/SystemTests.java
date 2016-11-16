@@ -1,13 +1,23 @@
 package urlshortener.gr4;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.ReadContext;
+
+import urlshortener.common.domain.googlesafebrowsing.Client;
+import urlshortener.common.domain.googlesafebrowsing.RequestFormat;
+import urlshortener.common.domain.googlesafebrowsing.ResponseFormat;
+import urlshortener.common.domain.googlesafebrowsing.ThreatEntry;
+import urlshortener.common.domain.googlesafebrowsing.ThreatInfo;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +25,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.nio.charset.Charset;
@@ -75,6 +86,44 @@ public class SystemTests {
 		assertThat(entity.getHeaders().getLocation(), is(new URI("http://example.com/")));
 	}
 
+	@Test
+	public void testGoogleSafeBrowsing_SafeURL() throws Exception {
+
+        String urlBase = "https://safebrowsing.googleapis.com/v4/threatMatches:find?key=AIzaSyCMQF934rfLzpVNkN64M9qB_V9N5RaessE";
+        RequestFormat requestFormat=new RequestFormat(new Client("GROUP_4","1.5.2"),new ThreatInfo(new ThreatEntry("http://www.google.es")));
+        String requestJson=new ObjectMapper().writeValueAsString(requestFormat);
+        
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity request= new HttpEntity(requestJson, headers );
+
+        ResponseEntity<ResponseFormat> response = new RestTemplate().exchange(urlBase, HttpMethod.POST, request, ResponseFormat.class);
+        String jsonRespuesta = new ObjectMapper().writeValueAsString(response);
+        
+		assertThat(response.getStatusCode(), is(HttpStatus.OK));
+		assertThat(jsonRespuesta, containsString("body"));
+	}
+	
+	@Test
+	public void testGoogleSafeBrowsingSafe_UnsafeURL() throws Exception {
+
+        String urlBase = "https://safebrowsing.googleapis.com/v4/threatMatches:find?key=AIzaSyCMQF934rfLzpVNkN64M9qB_V9N5RaessE";
+        RequestFormat requestFormat=new RequestFormat(new Client("GROUP_4","1.5.2"),new ThreatInfo(new ThreatEntry("http://ianfette.org/")));
+        String requestJson=new ObjectMapper().writeValueAsString(requestFormat);
+        
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity request= new HttpEntity(requestJson, headers );
+
+        ResponseEntity<ResponseFormat> response = new RestTemplate().exchange(urlBase, HttpMethod.POST, request, ResponseFormat.class);
+        String jsonRespuesta = new ObjectMapper().writeValueAsString(response);
+        
+		assertThat(response.getStatusCode(), is(HttpStatus.OK));
+		assertThat(jsonRespuesta, containsString("MALWARE"));
+	}
+	
+	
+	
 	private ResponseEntity<String> postLink(String url) {
 		MultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
 		parts.add("url", url);
