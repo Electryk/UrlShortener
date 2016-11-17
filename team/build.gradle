@@ -28,9 +28,12 @@ dependencies {
     compile 'org.webjars:jquery:2.1.4'
     compile 'com.google.apis:google-api-services-safebrowsing:v4-rev6-1.22.0'
     compile 'org.apache.commons:commons-lang3:3.4' 
+    compile group: 'org.json', name: 'json', version: '20090211'
 
     // Testing framework
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile 'org.apache.httpcomponents:httpclient:4.5.2'
     testCompile 'com.jayway.jsonpath:json-path:2.2.0'
+    testCompile group: 'org.json', name: 'json', version: '20090211'
 }
+
