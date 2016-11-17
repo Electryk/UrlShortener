@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>UrlShortener.team</name>
-	<comment>Project UrlShortener.team created by Buildship.</comment>
+	<name>team</name>
+	<comment>Project team created by Buildship.</comment>
 	<projects>
 	</projects>
 	<buildSpec>
@@ -31,5 +31,6 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.eclipse.wst.common.project.facet.core.nature</nature>
 		<nature>org.eclipse.wst.common.modulecore.ModuleCoreNature</nature>
+		<nature>org.eclipse.jem.workbench.JavaEMFNature</nature>
 	</natures>
 </projectDescription>

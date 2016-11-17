@@ -19,6 +19,7 @@ $(document).ready(
                         $("#result").html(
                                 "<div class='alert alert-danger lead'>ERROR</div>");
                     }
-                });
+                });                
             });
+        
     });
