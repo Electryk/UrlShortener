@@ -12,8 +12,12 @@ import urlshortener.common.domain.googlesafebrowsing.ThreatInfo;
 import urlshortener.gr4.web.UrlShortenerControllerWithLogs;
 
 import org.json.JSONObject;
+import urlshortener.common.domain.ShortURL;
+import urlshortener.common.repository.ShortURLRepository;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -49,6 +53,9 @@ public class SystemTests {
 
 	@Value("${local.server.port}")
 	private int port = 0;
+	
+	@Autowired
+	protected ShortURLRepository shortURLRepository;
 
 	@Test
 	public void testHome() throws Exception {
@@ -73,11 +80,11 @@ public class SystemTests {
 	public void testCreateLink() throws Exception {
 		ResponseEntity<String> entity = postLink("http://example.com/");
 		assertThat(entity.getStatusCode(), is(HttpStatus.CREATED));
-		assertThat(entity.getHeaders().getLocation(), is(new URI("http://localhost:"+ this.port+"/f684a3c4")));
+		assertThat(entity.getHeaders().getLocation(), is(new URI("http://localhost:"+ this.port+"/f684a3c4+Unknown+DownloadingTool+test")));
 		assertThat(entity.getHeaders().getContentType(), is(new MediaType("application", "json", Charset.forName("UTF-8"))));
 		ReadContext rc = JsonPath.parse(entity.getBody());
 		assertThat(rc.read("$.hash"), is("f684a3c4"));
-		assertThat(rc.read("$.uri"), is("http://localhost:"+ this.port+"/f684a3c4"));
+		assertThat(rc.read("$.uri"), is("http://localhost:"+ this.port+"/f684a3c4+Unknown+DownloadingTool+test"));
 		assertThat(rc.read("$.target"), is("http://example.com/"));
 		assertThat(rc.read("$.sponsor"), is(nullValue()));
 	}
@@ -164,7 +171,17 @@ public class SystemTests {
 		assertThat(jsonRespuesta, containsString("MALWARE"));
 	}
 	
-	
+	public void testCount() throws Exception {
+		postLink("http://example.com/");
+		ResponseEntity<String> entity = new TestRestTemplate().getForEntity(
+				"http://localhost:" + this.port
+						+ "/f684a3c4", String.class);
+		assertThat(entity.getStatusCode(), is(HttpStatus.TEMPORARY_REDIRECT));
+		assertThat(entity.getHeaders().getLocation(), is(new URI("http://example.com/")));
+		ShortURL l = shortURLRepository.findByKey("f684a3c4");
+		assertThat(1, is(l.getCount()));
+
+	}
 	
 	private ResponseEntity<String> postLink(String url) {
 		MultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
