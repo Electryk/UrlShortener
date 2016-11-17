@@ -25,10 +25,11 @@ import javax.servlet.http.HttpServletRequest;
 import urlshortener.common.domain.ShortURL;
 import urlshortener.common.repository.ClickRepository;
 import urlshortener.common.repository.ShortURLRepository;
-import urlshortener.common.useragentutils.Browser;
-import urlshortener.common.useragentutils.UserAgent;
-import urlshortener.common.useragentutils.Version;
 import urlshortener.common.domain.Click;
+
+import eu.bitwalker.useragentutils.Browser;
+import eu.bitwalker.useragentutils.UserAgent;
+import eu.bitwalker.useragentutils.Version;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
