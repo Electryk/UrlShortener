@@ -8417,3 +8417,16 @@ Caused by: java.io.FileNotFoundException: /home/mgx/IngenieriaWeb/urlShortener/U
 	at java.io.FileInputStream.<init>(FileInputStream.java:138)
 	at org.eclipse.buildship.core.configuration.internal.PreferenceStore$PropertiesFilePreferenceStore.loadProperties(PreferenceStore.java:182)
 	... 68 more
+
+!ENTRY org.eclipse.core.jobs 4 2 2016-11-17 11:14:42.684
+!MESSAGE An internal error occurred during: "Periodic workspace save.".
+!STACK 0
+java.lang.IllegalArgumentException: Cannot set lower sequence number for root (previous: 11, new: 2). Location: C:\Users\javmu\Documents\GitHub\UrlShortener\.metadata\.plugins\org.eclipse.core.resources\.safetable\org.eclipse.core.resources
+	at org.eclipse.core.runtime.Assert.isLegal(Assert.java:63)
+	at org.eclipse.core.internal.resources.SaveManager.validateMasterTableBeforeSave(SaveManager.java:1621)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1285)
+	at org.eclipse.core.internal.resources.SaveManager.saveMasterTable(SaveManager.java:1277)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1254)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1165)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:52)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
