@@ -9,14 +9,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+
 import javax.servlet.http.HttpServletRequest;
 
 import urlshortener.common.domain.ShortURL;
 import urlshortener.common.web.UrlShortenerController;
+import urlshortener.gr4.googlesafebrowsing.SafeBrowsing;
 
 @RestController
 public class UrlShortenerControllerWithLogs extends UrlShortenerController {
-
+	
 	private static final Logger logger = LoggerFactory.getLogger(UrlShortenerControllerWithLogs.class);
 
 	@Override
@@ -30,7 +35,16 @@ public class UrlShortenerControllerWithLogs extends UrlShortenerController {
 	public ResponseEntity<ShortURL> shortener(@RequestParam("url") String url,
 											  @RequestParam(value = "sponsor", required = false) String sponsor,
 											  HttpServletRequest request) {
+		
 		logger.info("Requested new short for uri " + url);
+		
+		SafeBrowsing sb = new SafeBrowsing();
+        try {
+            boolean isSafe = sb.isSafe(url);
+        } 
+        catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
 		return super.shortener(url, sponsor, request);
 	}
 }
