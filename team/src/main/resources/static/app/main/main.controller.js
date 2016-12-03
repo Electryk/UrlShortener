@@ -1,9 +1,9 @@
 angular.module('urlShortener.gr4.app')
   .controller('MainCtrl', MainCtrl);
 
-  MainCtrl.$inject = ['$http'];
+  MainCtrl.$inject = ['urlShortenerFactory'];
 
-  function MainCtrl($http) {
+  function MainCtrl(urlShortenerFactory) {
 
     var vm = this;
     vm.url = '';
@@ -16,20 +16,17 @@ angular.module('urlShortener.gr4.app')
     	
     	//If vm.url has value
     	if (vm.url) {
-    		$http({
-    			method: 'POST',
-    			url: 'http://localhost:8080/link',
-    			params: {url: vm.url}
-    		})
-    		.then(function success(response) {
-    			//Success petition
-    			vm.error = false;
-    			vm.shorterUrl = response.data.uri;
-    		}, function error(){
-    			//Error 
-    			vm.error = true;
-    			vm.shorterUrl = 'ERROR!';
-    		});
+    		urlShortenerFactory.createShorterUrl(vm.url)
+    			.then(function success(response) {
+	          //Success petition
+	          vm.error = false;
+	          vm.shorterUrl = response.data.uri;
+
+	        }, function error(){
+	          //Error 
+	          vm.error = true;
+	          vm.shorterUrl = 'ERROR!';
+	        });
     	} else {
     		//vm.url no value => ERROR
     		vm.error = true;
