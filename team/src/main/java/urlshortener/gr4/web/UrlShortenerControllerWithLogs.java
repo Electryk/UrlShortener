@@ -88,10 +88,17 @@ public class UrlShortenerControllerWithLogs extends UrlShortenerController {
 	}
 
 	@RequestMapping(value = "/locations", method = RequestMethod.GET)
-	public ResponseEntity<List<Location>> getLocations(@RequestParam("id") String id,
-			HttpServletRequest request) {
+	public ResponseEntity<List<Location>> getLocations(@RequestParam("id") String id, 
+																										 @RequestParam("dateInit") Long dateInit,
+																										 @RequestParam("dateEnd") Long dateEnd,
+																										 HttpServletRequest request) {
 		//Get location by hash
-		List<Location> list = getLocationsByHash(id);
+		logger.info("/LOCATIONS " + id + " " + dateInit + " " + dateEnd);
+		
+		Timestamp initDate = new Timestamp(dateInit);
+		Timestamp endDate = new Timestamp(dateEnd);
+
+		List<Location> list = getLocationsByHash(id, initDate, endDate);
 		System.out.println(list.size());
 
 		return new ResponseEntity(list, HttpStatus.OK);		
@@ -142,7 +149,7 @@ public class UrlShortenerControllerWithLogs extends UrlShortenerController {
 		}
 	}
 
-	private List<Location> getLocationsByHash(String hash) {
-		return locationRepository.findByHash(hash);
+	private List<Location> getLocationsByHash(String hash, Timestamp dateInit, Timestamp dateEnd) {
+		return locationRepository.listByRange(hash, dateInit, dateEnd);
 	}
 }

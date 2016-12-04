@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.List;
+import java.sql.Timestamp;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -156,4 +157,15 @@ public class LocationRepositoryImpl implements LocationRepository {
 		}
 	}
 
+	@Override
+	public List<Location> listByRange(String hash, Timestamp dateInit, Timestamp dateEnd) {
+		try {
+			return jdbc.query("SELECT * FROM location WHERE hash=? and created >= ? and created < ?",
+					new Object[] { hash, dateInit, dateEnd }, rowMapper);
+		} catch (Exception e) {
+			log.debug("When select for created >= " + dateInit + " and created <= "
+					+ dateEnd, e);
+			return null;
+		}
+	}
 }

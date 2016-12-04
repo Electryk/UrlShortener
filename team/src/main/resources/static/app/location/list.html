@@ -18,8 +18,8 @@
       </div>
 
       <div class="row">
-	    	<p class="lead">Inserte su URI para ver las localizaciones asociadas a ella.</p>
-	    	<div class="input-group">
+	    	<p class="lead">Inserte su URI para ver las localizaciones asociadas.</p>
+	    	<div class="input-group col-xs-12">
 		      <input type="text"
 		      			 class="form-control" 
 		      			 placeholder="Inserte su uri..."
@@ -31,6 +31,44 @@
 		      </span>
 		    </div>
 
+      	<div class="col-xs-6"
+      			 style="margin-top: 10px; margin-bottom: 0px;">
+      		<p class="inner">Seleccione <strong>la fecha y hora de inicio:</strong></p>
+      		<div class="col-xs-12">
+			      <p class="input-group">
+			        <input type="text" class="form-control" uib-datepicker-popup ng-model="listVM.dateInit" 
+			        is-open="listVM.opened" datepicker-options="{startingDay: 1}" ng-required="true" close-text="Cerrar" />
+			        <span class="input-group-btn">
+			        	<button type="button" class="btn btn-default" ng-click="listVM.open()"><i class="glyphicon glyphicon-calendar"></i></button>
+			        </span>
+			      </p>
+			    </div>
+
+			    <div class="col-xs-12">
+		      	<div uib-timepicker ng-model="listVM.dateInit" show-meridian="false"></div>
+		      </div>
+		    </div>
+
+		  	<div class="col-xs-6"
+      			 style="margin-top: 10px; margin-bottom: 0px;">
+      		<p class="inner">Seleccione <strong>la fecha y hora de fin:</strong></p>
+      		<div class="col-xs-12">
+			      <p class="input-group">
+			        <input type="text" class="form-control" uib-datepicker-popup ng-model="listVM.dateEnd" 
+			        is-open="listVM.opened2" datepicker-options="{startingDay: 1}" ng-required="true" close-text="Cerrar" />
+			        <span class="input-group-btn">
+			        	<button type="button" class="btn btn-default" ng-click="listVM.open2()"><i class="glyphicon glyphicon-calendar"></i></button>
+			        </span>
+			      </p>
+			    </div>
+
+			    <div class="col-xs-12">
+		      	<div uib-timepicker ng-model="listVM.dateEnd" show-meridian="false"></div>
+		      </div>
+		    </div>
+		  </div>
+
+		  <div class="row">
 		  	<div class="panel panel-default mt-sm"
 		  			 ng-if="listVM.locations.length !== 0"
 		  			 style="margin-top: 10px">

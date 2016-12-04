@@ -1,4 +1,4 @@
-angular.module('urlShortener.gr4.app', ['ui.router'])
+angular.module('urlShortener.gr4.app', ['ui.router', 'ui.bootstrap'])
     .config(configStates);
 
 configStates.$inject = ['$stateProvider', '$urlRouterProvider'];
