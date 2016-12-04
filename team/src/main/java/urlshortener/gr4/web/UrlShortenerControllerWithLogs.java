@@ -17,7 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.File;
 import java.net.URI;
 import java.sql.Date;
-
+import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
@@ -44,19 +44,28 @@ public class UrlShortenerControllerWithLogs extends UrlShortenerController {
 	protected LocationRepository locationRepository;
 
 	@Override
-	@RequestMapping(value = "/{id:(?!link|index).*}", method = RequestMethod.GET)
+	@RequestMapping(value = "/{id:(?!link|index|locations).*}", method = RequestMethod.GET)
 	public ResponseEntity<?> redirectTo(@PathVariable String id, HttpServletRequest request) {
 		logger.info("Requested redirection with hash " + id);
+
+		String hash = "";
+
+		if (id.contains("+")) {
+			hash = id.split("\\+")[0];
+		} else {
+			hash = id;
+		}
+
 		ResponseEntity<?> shortURL =  super.redirectTo(id, request);
 		
 		String ip = request.getRemoteAddr();
 		logger.info("IP := " + ip);
 		
 		//IP PUBLICA DE PRUEBA = 155.210.211.33
-		JSONObject locationIp = getLocationByIP(request.getRemoteAddr());
 		//JSONObject locationIp = getLocationByIP(request.getRemoteAddr());
+		JSONObject locationIp = getLocationByIP("155.210.211.33");
 		
-		createAndSaveLocation(id, locationIp);
+		createAndSaveLocation(hash, locationIp);
 		return shortURL;
 	}
 
@@ -76,6 +85,16 @@ public class UrlShortenerControllerWithLogs extends UrlShortenerController {
             e.printStackTrace();
         }
 		return super.shortener(url, sponsor, request);
+	}
+
+	@RequestMapping(value = "/locations", method = RequestMethod.GET)
+	public ResponseEntity<List<Location>> getLocations(@RequestParam("id") String id,
+			HttpServletRequest request) {
+		//Get location by hash
+		List<Location> list = getLocationsByHash(id);
+		System.out.println(list.size());
+
+		return new ResponseEntity(list, HttpStatus.OK);		
 	}
 	
 	public JSONObject getLocationByIP(String ip) {
@@ -106,19 +125,24 @@ public class UrlShortenerControllerWithLogs extends UrlShortenerController {
 			if (locationIp.getString("status").compareTo("success") == 0) {
 				location = new Location(hash, locationIp.getString("city"), locationIp.getString("country"),
 						locationIp.getString("lat"), locationIp.getString("lon"), locationIp.getString("ip"),
-						locationIp.getString("regionName"), locationIp.getString("org"), null);
+						locationIp.getString("regionName"), locationIp.getString("org"), null, new Date(System.currentTimeMillis()));
 				
 				logger.info("INFO IP := " + location.toString());
 			} else {
 				location = new Location(hash, null, "private range",
 						null, null, locationIp.getString("ip"),
-						null, null, null);
+						null, null, null, new Date(System.currentTimeMillis()));
 			}
 			location=locationRepository.save(location);
 			logger.info(location!=null?"["+hash+"] saved with id ["+location.getId()+" in Location]":"["+hash+"] was not saved");
+			logger.info(location.toString());
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	private List<Location> getLocationsByHash(String hash) {
+		return locationRepository.findByHash(hash);
 	}
 }

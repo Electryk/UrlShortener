@@ -7,7 +7,12 @@ function configStates($stateProvider, $urlRouterProvider) {
       .state('main', {
         url: '/main',
         controller: 'MainCtrl as mainVM',
-        templateUrl: 'app/main/main2.html'
+        templateUrl: 'app/main/main.html'
+      })
+      .state('location', {
+        url: '/location',
+        controller: 'LocationListCtrl as listVM',
+        templateUrl: 'app/location/list.html'
       });
 
      $urlRouterProvider.otherwise('main');

@@ -1,0 +1,54 @@
+<div class="site-wrapper">
+
+  <div class="site-wrapper-inner">
+
+    <div class="cover-container">
+
+      <div class="masthead clearfix">
+        <div class="inner">
+          <h3 class="masthead-brand">URL Shortener</h3>
+          <nav>
+            <ul class="nav masthead-nav">
+              <li><a ui-sref="main">Home</a></li>
+              <li class="active"><a href="#">Locations</a></li>
+              <li><a href="#">Contact</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+
+      <div class="row">
+	    	<p class="lead">Inserte su URI para ver las localizaciones asociadas a ella.</p>
+	    	<div class="input-group">
+		      <input type="text"
+		      			 class="form-control" 
+		      			 placeholder="Inserte su uri..."
+		      			 ng-model="listVM.uri">
+		      <span class="input-group-btn">
+		        <button class="btn btn-primary" 
+		        				type="button"
+		        				ng-click="listVM.getLocation()">Ver</button>
+		      </span>
+		    </div>
+		  	<div class="panel panel-default mt-sm"
+		  			 ng-if="listVM.uri !== ''">
+				  <div class="panel-heading">
+				    <h3 class="panel-title">Panel title</h3>
+				  </div>
+				  <div class="panel-body">
+				    Panel content
+				  </div>
+				</div>
+		  </div>
+
+      <div class="mastfoot">
+        <div class="inner">
+          <p>Proyecto de la asignatura <a href="">Ingeniería web</a>, realizado por el <a href="">grupo 4</a>.</p>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
