@@ -30,14 +30,63 @@
 		        				ng-click="listVM.getLocation()">Ver</button>
 		      </span>
 		    </div>
+
 		  	<div class="panel panel-default mt-sm"
-		  			 ng-if="listVM.uri !== ''">
-				  <div class="panel-heading">
-				    <h3 class="panel-title">Panel title</h3>
-				  </div>
-				  <div class="panel-body">
-				    Panel content
-				  </div>
+		  			 ng-if="listVM.locations.length !== 0"
+		  			 style="margin-top: 10px">
+		  		<div class="panel-heading">
+				    <table class="table table-striped">
+				    	<thead>
+	              <tr>
+	                <th class="col-xs-1 text-center">#</th>
+	                <th class="col-xs-2 text-center">Fecha</th>
+	                <th class="col-xs-2 text-center">Hora</th>
+	                <th class="col-xs-3 text-center">Organización</th>
+	                <th class="col-xs-2 text-center">Ciudad</th>
+	                <th class="col-xs-2 text-center">Pais</th>
+	              </tr>
+	            </thead>
+	            <tbody>
+							  <tr ng-repeat="location in listVM.locations">
+							  	<!-- rowId -->
+			            <td class="col-xs-1 text-center">
+			              {{ ::location.id }}
+			            </td>
+			            <!-- /rowId -->
+
+			            <!-- date -->
+			            <td class="col-xs-2 text-center">
+			              {{ ::location.created | date : 'dd/MM/yy' }}
+			            </td>
+			            <!-- /date -->
+
+			            <!-- time -->
+			            <td class="col-xs-2 text-center">
+			              {{ ::location.created | date : 'HH:mm' }}
+			            </td>
+			            <!-- /time -->
+
+			            <!-- organization -->
+			            <td class="col-xs-3 text-center">
+			              {{ ::location.organization }}
+			            </td>
+			            <!-- /organization -->
+
+			            <!-- city -->
+			            <td class="col-xs-2 text-center">
+			              {{ ::location.city }}
+			            </td>
+			            <!-- /city -->
+
+			            <!-- country -->
+			            <td class="col-xs-2 text-center">
+			              {{ ::location.country }}
+			            </td>
+			            <!-- /country -->
+			        	</tr>
+	            </tbody>
+						</table>
+					</div>
 				</div>
 		  </div>
 

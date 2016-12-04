@@ -34,7 +34,7 @@ public class LocationRepositoryImpl implements LocationRepository {
 		public Location mapRow(ResultSet rs, int rowNum) throws SQLException {
 			return new Location(rs.getString("hash"), rs.getString("city"), rs.getString("country"),
 					rs.getString("lat"), rs.getString("lng"), rs.getString("ip"),
-					rs.getString("region"), rs.getString("organization"), rs.getLong("id"), rs.getDate("created"));
+					rs.getString("region"), rs.getString("organization"), rs.getLong("id"), rs.getTimestamp("created"));
 		}
 	};
 
@@ -80,7 +80,7 @@ public class LocationRepositoryImpl implements LocationRepository {
 					ps.setString(6, loc.getLatitude());
 					ps.setString(7, loc.getLongitude());
 					ps.setString(8, loc.getRegionName());
-					ps.setDate(9, loc.getCreated());
+					ps.setTimestamp(9, loc.getCreated());
 					ps.setString(10, loc.getOrganization());
 					return ps;
 				}

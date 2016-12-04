@@ -1,6 +1,6 @@
 package urlshortener.common.domain;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 public class Location {
 	private Long id;
@@ -12,10 +12,10 @@ public class Location {
 	private String ip;
 	private String regionName;
 	private String organization;
-	private Date created;
+	private Timestamp created;
 	
 	public Location(String shortURL, String city, String country, String latitude, String longitude,
-			String ip, String regionName, String organization, Long id, Date created) {
+			String ip, String regionName, String organization, Long id, Timestamp created) {
 		this.id = id;
 		this.shortURL = shortURL;
 		this.city = city;
@@ -25,6 +25,7 @@ public class Location {
 		this.ip = ip;
 		this.regionName = regionName;
 		this.organization = organization;
+		this.created = created;
 	}
 	
 	public Long getId() {
@@ -99,11 +100,11 @@ public class Location {
 		this.organization = organization;
 	}
 
-	public Date getCreated() {
+	public Timestamp getCreated() {
 		return created;
 	}
 
-	public void setCreated(Date created) {
+	public void setCreated(Timestamp created) {
 		this.created = created;
 	}
 

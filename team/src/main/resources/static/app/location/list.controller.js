@@ -8,6 +8,7 @@ angular.module('urlShortener.gr4.app')
     var vm = this;
 
     vm.uri = '';
+    vm.locations = [];
 
     vm.getLocation = getLocation;
 
@@ -15,7 +16,7 @@ angular.module('urlShortener.gr4.app')
       locationFactory.getLocationUrl(vm.uri)
         .then(function(result) {
           console.log(result.data)
+          vm.locations = result.data;
         })
-    };
-     
+    };     
   };

@@ -16,7 +16,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
 import java.net.URI;
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -125,13 +125,13 @@ public class UrlShortenerControllerWithLogs extends UrlShortenerController {
 			if (locationIp.getString("status").compareTo("success") == 0) {
 				location = new Location(hash, locationIp.getString("city"), locationIp.getString("country"),
 						locationIp.getString("lat"), locationIp.getString("lon"), locationIp.getString("ip"),
-						locationIp.getString("regionName"), locationIp.getString("org"), null, new Date(System.currentTimeMillis()));
+						locationIp.getString("regionName"), locationIp.getString("org"), null, new Timestamp(System.currentTimeMillis()));
 				
 				logger.info("INFO IP := " + location.toString());
 			} else {
 				location = new Location(hash, null, "private range",
 						null, null, locationIp.getString("ip"),
-						null, null, null, new Date(System.currentTimeMillis()));
+						null, null, null, new Timestamp(System.currentTimeMillis()));
 			}
 			location=locationRepository.save(location);
 			logger.info(location!=null?"["+hash+"] saved with id ["+location.getId()+" in Location]":"["+hash+"] was not saved");
