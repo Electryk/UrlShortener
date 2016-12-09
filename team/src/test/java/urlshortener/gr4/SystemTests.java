@@ -8,11 +8,12 @@ import urlshortener.common.domain.googlesafebrowsing.RequestFormat;
 import urlshortener.common.domain.googlesafebrowsing.ResponseFormat;
 import urlshortener.common.domain.googlesafebrowsing.ThreatEntry;
 import urlshortener.common.domain.googlesafebrowsing.ThreatInfo;
-
+import urlshortener.gr4.geoIpLocation.LocationIp;
 import urlshortener.gr4.web.UrlShortenerControllerWithLogs;
 
 import org.json.JSONObject;
 import urlshortener.common.domain.ShortURL;
+import urlshortener.common.repository.LocationRepository;
 import urlshortener.common.repository.ShortURLRepository;
 
 import org.junit.Test;
@@ -56,6 +57,10 @@ public class SystemTests {
 	
 	@Autowired
 	protected ShortURLRepository shortURLRepository;
+	
+	@Autowired
+	protected LocationRepository locationRepository;
+	LocationIp locationIp = new LocationIp();
 
 	@Test
 	public void testHome() throws Exception {
@@ -103,8 +108,7 @@ public class SystemTests {
 	public void testLocationPublicIP() throws Exception {
 		//IP PUBLICA DE PRUEBA = 155.210.211.33
 		String IP = "155.210.211.33";
-		UrlShortenerControllerWithLogs UrlSC = new UrlShortenerControllerWithLogs();
-		JSONObject location = UrlSC.getLocationByIP(IP);
+		JSONObject location = locationIp.getLocationByIP(IP);
 		
 		assertEquals(location.getString("status"), "success");
 		assertEquals(location.has("city"), true);
@@ -120,8 +124,7 @@ public class SystemTests {
 	public void testLocationPrivateIP() throws Exception {
 		//IP PUBLICA DE PRUEBA = 127.0.0.1
 		String IP = "127.0.0.1";
-		UrlShortenerControllerWithLogs UrlSC = new UrlShortenerControllerWithLogs();
-		JSONObject location = UrlSC.getLocationByIP(IP);
+		JSONObject location = locationIp.getLocationByIP(IP);
 
 		assertEquals(location.getString("status"), "fail");
 		assertEquals(location.has("ip"), true);
@@ -144,7 +147,7 @@ public class SystemTests {
         
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity request= new HttpEntity(requestJson, headers );
+        HttpEntity request= new HttpEntity(requestJson, headers);
 
         ResponseEntity<ResponseFormat> response = new RestTemplate().exchange(urlBase, HttpMethod.POST, request, ResponseFormat.class);
         String jsonRespuesta = new ObjectMapper().writeValueAsString(response);
