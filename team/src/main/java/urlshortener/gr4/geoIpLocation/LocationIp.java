@@ -28,17 +28,17 @@ public class LocationIp {
 	}
 	
 	/**
-	 * This fucntion get an ArrayList of all Locations associated to <hash> 
+	 * This fucntion get an ArrayList of all Locations associated to <pattern> 
 	 * between <dateInit> and <dateEnd>
 	 */
-	public List<Location> getLocationsByHash(String hash, Long dateInit, Long dateEnd, 
+	public List<Location> getLocationsByHash(String pattern, Long dateInit, Long dateEnd, 
 			LocationRepository locationRepository) {
 		
 		//Convert <dateInit> and <dateEnd> to Timestamps
 		Timestamp initDate = new Timestamp(dateInit);
 		Timestamp endDate = new Timestamp(dateEnd);
 		
-		return locationRepository.listByRange(hash, initDate, endDate);
+		return locationRepository.listByPattern(pattern, initDate, endDate);
 	}
 	
 	/**

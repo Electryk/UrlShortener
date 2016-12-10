@@ -7,7 +7,7 @@ angular.module('urlShortener.gr4.app')
 
     var vm = this;
 
-    vm.uri = '';
+    vm.pattern = '';
     vm.locations = [];
     vm.opened = false;
     vm.opened2 = false;
@@ -21,7 +21,7 @@ angular.module('urlShortener.gr4.app')
     function getLocation() {
       vm.dateInit.setSeconds(00);
       vm.dateEnd.setSeconds(59);
-      locationFactory.getLocationUrl(vm.uri, vm.dateInit, vm.dateEnd)
+      locationFactory.getLocationUrl(vm.pattern, vm.dateInit, vm.dateEnd)
         .then(function(result) {
           console.log(result.data)
           vm.locations = result.data;

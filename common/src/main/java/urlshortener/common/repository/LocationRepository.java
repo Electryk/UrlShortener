@@ -20,6 +20,8 @@ public interface LocationRepository {
 	Long count();
 
 	List<Location> list(Long limit, Long offset);
+	
+	List<Location> listByPattern(String pattern, Timestamp dateInit, Timestamp dateEnd);
 
 	List<Location> listByRange(String hash, Timestamp dateInit, Timestamp dateEnd);
 }

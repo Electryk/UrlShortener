@@ -73,12 +73,12 @@ public class UrlShortenerControllerWithLogs extends UrlShortenerController {
 	}
 
 	@RequestMapping(value = "/locations", method = RequestMethod.GET)
-	public ResponseEntity<List<Location>> getLocations(@RequestParam("id") String id, 
+	public ResponseEntity<List<Location>> getLocations(@RequestParam("pattern") String pattern, 
 													   @RequestParam("dateInit") Long dateInit,
 													   @RequestParam("dateEnd") Long dateEnd) {
 
 		//Get an ArrayList of Locations
-		List<Location> list = locationIp.getLocationsByHash(id, dateInit, dateEnd, locationRepository);
+		List<Location> list = locationIp.getLocationsByHash(pattern, dateInit, dateEnd, locationRepository);
 
 		return new ResponseEntity<List<Location>>(list, HttpStatus.OK);		
 	}
