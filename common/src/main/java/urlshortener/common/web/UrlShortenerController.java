@@ -47,8 +47,7 @@ public class UrlShortenerController {
 	@RequestMapping(value = "/{id:(?!link).*}", method = RequestMethod.GET)
 	public ResponseEntity<?> redirectTo(@PathVariable String id,
 			HttpServletRequest request) {
-		String hash = id.split("\\+")[0];
-		ShortURL l = shortURLRepository.findByKey(hash);
+		ShortURL l = shortURLRepository.findByKey(id);
 		if (l != null) {
 			shortURLRepository.incCount(l);
 			System.out.println("COUNT: " + l.getCount());
@@ -82,6 +81,7 @@ public class UrlShortenerController {
 											  HttpServletRequest request) {
 		
 		// Identify browser, browser version, and operating system.
+		/*
 	    UserAgent userAgent = UserAgent.parseUserAgentString(request.getHeader("User-Agent"));
 	    Browser browser = userAgent.getBrowser();
 	    String browserName = browser.getName();
@@ -94,13 +94,12 @@ public class UrlShortenerController {
 	    else version = browserVersion.toString();
 	    String res = "+" + os + "+" + browserName + "+" + version;
 	    res = res.replaceAll("\\s+","");
-	    
+	    */
 	    
 		ShortURL su = createAndSaveIfValid(url, sponsor, UUID
-				.randomUUID().toString(), extractIP(request), res);
+				.randomUUID().toString(), extractIP(request));
 
 		if (su != null) {
-
 			HttpHeaders h = new HttpHeaders();
 			h.setLocation(su.getUri());
 			return new ResponseEntity<>(su, h, HttpStatus.CREATED);
@@ -110,7 +109,7 @@ public class UrlShortenerController {
 	}
 
 	private ShortURL createAndSaveIfValid(String url, String sponsor,
-										  String owner, String ip, String res) {
+										  String owner, String ip) {
 		UrlValidator urlValidator = new UrlValidator(new String[] { "http",
 				"https" });
 		if (urlValidator.isValid(url)) {
@@ -120,7 +119,7 @@ public class UrlShortenerController {
 			ShortURL su = new ShortURL(id, url,
 					linkTo(
 							methodOn(UrlShortenerController.class).redirectTo(
-									id + res, null)).toUri(), sponsor, new Date(
+									id, null)).toUri(), sponsor, new Date(
 							System.currentTimeMillis()), owner,
 					HttpStatus.TEMPORARY_REDIRECT.value(), true, ip, null, 0);
 
