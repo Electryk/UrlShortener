@@ -48,6 +48,35 @@
 						<p ng-if="mainVM.error">
 							{{mainVM.shorterUrl}}
 						</p>
+      		<div class="btn-group">
+				<form role="form" ng-submit="mainVM.getJsonInfo()">
+					<div class="input-group">
+			      		<span class="input-group-btn">
+			        <button class="btn btn-primary" type="submit">JSon</button>
+			     	 </span>
+			   		 </div>
+				</form>
+				<form role="form" ng-submit="mainVM.getHtmlInfo()">
+					<div class="input-group">
+			      		<span class="input-group-btn">
+			        <button class="btn btn-primary" type="submit">HTML</button>
+			     	 </span>
+			   		 </div>
+				</form>
+				</div>
+				<div ng-class="{'alert alert-info': !mainVM.errorJson, 'alert alert-danger': mainVM.errorJson}"
+						 	 ng-if="mainVM.browserName !== ''">
+						<a ng-if="!mainVM.errorJson"
+						   class="alert-link">
+						   	{{mainVM.browserName}}
+							{{mainVM.browserVersion}}
+						   	{{mainVM.os}}
+						</a>
+						<p ng-if="mainVM.error">
+							{{mainVM.shorterUrl}}
+						</p>
+						</div>
+			
 					</div>
 					<!-- /Alert -->
 				</div>

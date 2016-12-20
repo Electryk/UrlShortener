@@ -8,8 +8,7 @@ function configStates($stateProvider, $urlRouterProvider) {
         url: '/main',
         controller: 'MainCtrl as mainVM',
         templateUrl: 'app/main/main.html'
-      });
-
+      })
      $urlRouterProvider.otherwise('main');
 
 };

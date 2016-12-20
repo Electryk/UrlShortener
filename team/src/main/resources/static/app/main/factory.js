@@ -6,7 +6,9 @@ angular.module('urlShortener.gr4.app')
   function urlShortenerFactory($http) {
 
     var factory = {
-      createShorterUrl: createShorterUrl
+      createShorterUrl: createShorterUrl,
+      createJsonInfo: createJsonInfo,
+      createHtmlInfo: createHtmlInfo
     };
 
     function createShorterUrl(url) {
@@ -16,6 +18,24 @@ angular.module('urlShortener.gr4.app')
         params: {url: url}
       });
     };
+    function createJsonInfo(hash) {
+        return $http({
+          method: 'GET',
+          url: 'http://localhost:8080/' + hash + "+",
+          headers: {
+              'Accept': 'application/json'
+          }
+        });
+     };
+     function createHtmlInfo(hash) {
+         return $http({
+           method: 'GET',
+           url: 'http://localhost:8080/' + hash + "+",
+           headers: {
+               'Accept': 'text/html'
+           }
+         });
+      };
 
     return factory;
 

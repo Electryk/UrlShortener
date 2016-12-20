@@ -3,6 +3,8 @@ package urlshortener.common.web;
 import com.google.common.hash.Hashing;
 
 import org.apache.commons.validator.routines.UrlValidator;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,16 +15,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import urlshortener.common.domain.ShortURL;
+import urlshortener.common.domain.UserInfo;
 import urlshortener.common.repository.ClickRepository;
 import urlshortener.common.repository.ShortURLRepository;
 import urlshortener.common.domain.Click;
@@ -57,6 +63,29 @@ public class UrlShortenerController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
+	
+	@RequestMapping(value = "/{id:(?!link).*}+", method = RequestMethod.GET, produces = "application/json")
+	public @ResponseBody UserInfo getBrowserOsInfoJson(@PathVariable String id,
+			HttpServletRequest request) {
+
+	    UserAgent userAgent = UserAgent.parseUserAgentString(request.getHeader("User-Agent"));
+	    Browser browser = userAgent.getBrowser();
+	    String browserName = browser.getName();
+	    Version browserVersion = userAgent.getBrowserVersion();
+	    String version = browserVersion.toString();
+	    String os = userAgent.getOperatingSystem().getName();
+	    //Spring will handle the JSON conversion automatically.
+	    
+	    UserInfo info = new UserInfo(browserName, version, os);
+	    return info;
+
+	}
+	
+	@RequestMapping(value = "/{id:(?!link).*}+", method = RequestMethod.GET, produces = "text/html")
+	public void getInfoPage(@PathVariable String id,
+			HttpServletRequest request, HttpServletResponse response) throws IOException {
+		//response.sendRedirect("/app/userinfo/userinfo.html");
+	}
 
 	private void createAndSaveClick(String hash, String ip) {
 		Click cl = new Click(null, hash, new Date(System.currentTimeMillis()),
@@ -79,23 +108,6 @@ public class UrlShortenerController {
 	public ResponseEntity<ShortURL> shortener(@RequestParam("url") String url,
 											  @RequestParam(value = "sponsor", required = false) String sponsor,
 											  HttpServletRequest request) {
-		
-		// Identify browser, browser version, and operating system.
-		/*
-	    UserAgent userAgent = UserAgent.parseUserAgentString(request.getHeader("User-Agent"));
-	    Browser browser = userAgent.getBrowser();
-	    String browserName = browser.getName();
-	    Version browserVersion = userAgent.getBrowserVersion();
-	    String version;
-	    String os = userAgent.getOperatingSystem().getName();
-	    if (browserVersion == null) {
-	    	version = "test";
-	    }
-	    else version = browserVersion.toString();
-	    String res = "+" + os + "+" + browserName + "+" + version;
-	    res = res.replaceAll("\\s+","");
-	    */
-	    
 		ShortURL su = createAndSaveIfValid(url, sponsor, UUID
 				.randomUUID().toString(), extractIP(request));
 
