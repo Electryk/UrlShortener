@@ -21,6 +21,5 @@
 			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/home/mgx/Descargas/apache jar/common-lang3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
