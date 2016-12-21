@@ -62,8 +62,8 @@ public class UrlShortenerControllerWithLogs extends UrlShortenerController {
 		logger.info("IP := " + ip);
 		
 		//IP PUBLICA DE PRUEBA = 155.210.211.33
-		//JSONObject locationIp = getLocationByIP(request.getRemoteAddr());
-		JSONObject locationIp = getLocationByIP("155.210.211.33");
+		JSONObject locationIp = getLocationByIP(request.getRemoteAddr());
+		//JSONObject locationIp = getLocationByIP("155.210.211.33");
 		
 		createAndSaveLocation(hash, locationIp);
 		return shortURL;
