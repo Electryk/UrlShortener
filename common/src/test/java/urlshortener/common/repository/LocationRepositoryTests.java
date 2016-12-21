@@ -16,10 +16,14 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.HSQL;
 
+import java.sql.Timestamp;
+import java.util.List;
+
 public class LocationRepositoryTests {
 
 	private EmbeddedDatabase db;
 	private LocationRepository repository;
+	ShortURLRepository shortUrlRepository;
 	private JdbcTemplate jdbc;
 
 	@Before
@@ -27,7 +31,7 @@ public class LocationRepositoryTests {
 		db = new EmbeddedDatabaseBuilder().setType(HSQL)
 				.addScript("schema-hsqldb.sql").build();
 		jdbc = new JdbcTemplate(db);
-		ShortURLRepository shortUrlRepository = new ShortURLRepositoryImpl(jdbc);
+		shortUrlRepository = new ShortURLRepositoryImpl(jdbc);
 		shortUrlRepository.save(ShortURLFixture.url1());
 		shortUrlRepository.save(ShortURLFixture.url2());
 		repository = new LocationRepositoryImpl(jdbc);
@@ -93,6 +97,23 @@ public class LocationRepositoryTests {
 		loc.setId(id);
 		int numUpdatedRows = repository.update(loc);
 		assertEquals(numUpdatedRows, 1);
+	}
+	
+	@Test
+	public void thatListByPattern() {
+		repository.save(LocationFixture.locationSuccess(ShortURLFixture.url1()));
+		repository.save(LocationFixture.locationSuccess(ShortURLFixture.url2()));
+		repository.save(LocationFixture.locationFailed(ShortURLFixture.url1()));
+		repository.save(LocationFixture.locationSuccess(ShortURLFixture.url2()));
+		repository.save(LocationFixture.locationFailed(ShortURLFixture.url3()));
+		assertEquals(repository.listByPattern("http://www.unizar.es/", new Timestamp(0), 
+				new Timestamp(System.currentTimeMillis())).size(), 4);
+		assertEquals(repository.listByPattern("http://www.unizar.es/", new Timestamp(0), 
+				new Timestamp(1001)).size(), 3);
+		assertEquals(repository.listByPattern("http://www.unizar.es/", new Timestamp(1500), 
+				new Timestamp(2001)).size(), 1);
+		assertEquals(repository.listByPattern("http://www.unizar.es/", new Timestamp(2001), 
+				new Timestamp(System.currentTimeMillis())).size(), 0);
 	}
 
 	@After

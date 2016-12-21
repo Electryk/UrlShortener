@@ -168,4 +168,18 @@ public class LocationRepositoryImpl implements LocationRepository {
 			return null;
 		}
 	}
+	
+	@Override
+	public List<Location> listByPattern(String pattern, Timestamp dateInit, Timestamp dateEnd) {
+		try {
+			String patternNew = "%" + pattern + "%";
+			return jdbc.query("SELECT l.hash, l.city, l.country, l.ip, l.lat, l.lng,"
+					+ " l.region, l.created, l.organization, l.id FROM location l, shorturl u"
+					+ " WHERE u.target LIKE ? and l.hash = u.hash and l.created >= ? and l.created < ?",
+					new Object[] { patternNew, dateInit, dateEnd }, rowMapper);
+		} catch (Exception e) {
+			log.debug("When select for pattern " + pattern, e);
+			return null;
+		}
+	}
 }

@@ -9,12 +9,12 @@ angular.module('urlShortener.gr4.app')
       getLocationUrl: getLocationUrl
     };
 
-    function getLocationUrl(uri, dateInit, dateEnd) {
+    function getLocationUrl(pattern, dateInit, dateEnd) {
       return $http({
         method: 'GET',
         url: 'http://localhost:8080/locations',
         params: {
-          id: uri,
+          pattern: pattern,
           dateInit: dateInit.getTime(),
           dateEnd: dateEnd.getTime()
         }
