@@ -75,11 +75,12 @@ public class UrlShortenerController {
 		h.setLocation(URI.create(l.getTarget()));
 		return new ResponseEntity<>(h, HttpStatus.valueOf(l.getMode()));
 	}
-
+	
 	@RequestMapping(value = "/link", method = RequestMethod.POST)
 	public ResponseEntity<ShortURL> shortener(@RequestParam("url") String url,
 											  @RequestParam(value = "sponsor", required = false) String sponsor,
-											  HttpServletRequest request) {
+											  HttpServletRequest request,
+											  boolean isSafe) {
 		
 		// Identify browser, browser version, and operating system.
 	    UserAgent userAgent = UserAgent.parseUserAgentString(request.getHeader("User-Agent"));
@@ -97,8 +98,8 @@ public class UrlShortenerController {
 	    
 	    
 		ShortURL su = createAndSaveIfValid(url, sponsor, UUID
-				.randomUUID().toString(), extractIP(request), res);
-
+				.randomUUID().toString(), extractIP(request), res, isSafe);
+		
 		if (su != null) {
 
 			HttpHeaders h = new HttpHeaders();
@@ -110,7 +111,7 @@ public class UrlShortenerController {
 	}
 
 	private ShortURL createAndSaveIfValid(String url, String sponsor,
-										  String owner, String ip, String res) {
+										  String owner, String ip, String res, boolean isSafe) {
 		UrlValidator urlValidator = new UrlValidator(new String[] { "http",
 				"https" });
 		if (urlValidator.isValid(url)) {
@@ -122,7 +123,7 @@ public class UrlShortenerController {
 							methodOn(UrlShortenerController.class).redirectTo(
 									id + res, null)).toUri(), sponsor, new Date(
 							System.currentTimeMillis()), owner,
-					HttpStatus.TEMPORARY_REDIRECT.value(), true, ip, null, 0);
+					HttpStatus.TEMPORARY_REDIRECT.value(), isSafe, ip, null, 0);
 
 			return shortURLRepository.save(su);
 		} else {

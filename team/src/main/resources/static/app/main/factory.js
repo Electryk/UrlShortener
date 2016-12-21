@@ -13,6 +13,7 @@ angular.module('urlShortener.gr4.app')
       return $http({
         method: 'POST',
         url: 'http://localhost:8080/link',
+	//headers: { 'Accept': 'text/html'},
         params: {url: url}
       });
     };

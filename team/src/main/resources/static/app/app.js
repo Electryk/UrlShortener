@@ -8,7 +8,16 @@ function configStates($stateProvider, $urlRouterProvider) {
         url: '/main',
         controller: 'MainCtrl as mainVM',
         templateUrl: 'app/main/main.html'
-      });
+      })
+
+        .state('SafeBrowsing', {
+          url: '/SafeBrowsing',
+          params: {
+            uri: null
+          },
+          controller: 'SafeBrowsingCtrl as SafeBrowsingVM',
+          templateUrl: 'app/SafeBrowsing/SafeBrowsing.html'
+        });
 
      $urlRouterProvider.otherwise('main');
 
