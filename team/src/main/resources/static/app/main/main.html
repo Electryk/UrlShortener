@@ -37,8 +37,8 @@
 				<div class="col-xs-12 text-center">
 					<br />
 					<!-- Alert -->
-	      	<div ng-class="{'alert alert-success': !mainVM.error, 'alert alert-danger': mainVM.error}"
-						 	 ng-if="mainVM.shorterUrl !== ''">
+	      				<div ng-class="{'alert alert-success': !mainVM.error, 'alert alert-danger': mainVM.error}"
+					     ng-if="mainVM.shorterUrl !== ''">
 						<a href="{{mainVM.shorterUrl}}"
 						   ng-if="!mainVM.error"
 						   target="_blank"
@@ -48,6 +48,7 @@
 						<p ng-if="mainVM.error">
 							{{mainVM.shorterUrl}}
 						</p>
+			
 					</div>
 					<!-- /Alert -->
 				</div>
