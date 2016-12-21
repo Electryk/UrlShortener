@@ -1,0 +1,141 @@
+<div class="site-wrapper">
+
+  <div class="site-wrapper-inner">
+
+    <div class="cover-container">
+
+      <div class="masthead clearfix">
+        <div class="inner">
+          <h3 class="masthead-brand">URL Shortener</h3>
+          <nav>
+            <ul class="nav masthead-nav">
+              <li><a ui-sref="main">Home</a></li>
+              <li class="active"><a href="#">Locations</a></li>
+              <li><a href="#">Contact</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+
+      <div class="row">
+	    	<p class="lead">Inserte un patrón URI para ver las localizaciones asociadas.</p>
+	    	<div class="input-group col-xs-12">
+		      <input type="text"
+		      			 class="form-control" 
+		      			 placeholder="Inserte un patron uri..."
+		      			 ng-model="listVM.pattern">
+		      <span class="input-group-btn">
+		        <button class="btn btn-primary" 
+		        				type="button"
+		        				ng-click="listVM.getLocation()">Ver</button>
+		      </span>
+		    </div>
+
+      	<div class="col-xs-6"
+      			 style="margin-top: 10px; margin-bottom: 0px;">
+      		<p class="inner">Seleccione <strong>la fecha y hora de inicio:</strong></p>
+      		<div class="col-xs-12">
+			      <p class="input-group">
+			        <input type="text" class="form-control" uib-datepicker-popup ng-model="listVM.dateInit" 
+			        is-open="listVM.opened" datepicker-options="{startingDay: 1}" ng-required="true" close-text="Cerrar" />
+			        <span class="input-group-btn">
+			        	<button type="button" class="btn btn-default" ng-click="listVM.open()"><i class="glyphicon glyphicon-calendar"></i></button>
+			        </span>
+			      </p>
+			    </div>
+
+			    <div class="col-xs-12">
+		      	<div uib-timepicker ng-model="listVM.dateInit" show-meridian="false"></div>
+		      </div>
+		    </div>
+
+		  	<div class="col-xs-6"
+      			 style="margin-top: 10px; margin-bottom: 0px;">
+      		<p class="inner">Seleccione <strong>la fecha y hora de fin:</strong></p>
+      		<div class="col-xs-12">
+			      <p class="input-group">
+			        <input type="text" class="form-control" uib-datepicker-popup ng-model="listVM.dateEnd" 
+			        is-open="listVM.opened2" datepicker-options="{startingDay: 1}" ng-required="true" close-text="Cerrar" />
+			        <span class="input-group-btn">
+			        	<button type="button" class="btn btn-default" ng-click="listVM.open2()"><i class="glyphicon glyphicon-calendar"></i></button>
+			        </span>
+			      </p>
+			    </div>
+
+			    <div class="col-xs-12">
+		      	<div uib-timepicker ng-model="listVM.dateEnd" show-meridian="false"></div>
+		      </div>
+		    </div>
+		  </div>
+
+		  <div class="row">
+		  	<div class="panel panel-default mt-sm"
+		  			 ng-if="listVM.locations.length !== 0"
+		  			 style="margin-top: 10px">
+		  		<div class="panel-heading">
+				    <table class="table table-striped">
+				    	<thead>
+	              <tr>
+	                <th class="col-xs-1 text-center">#</th>
+	                <th class="col-xs-2 text-center">Fecha</th>
+	                <th class="col-xs-2 text-center">Hora</th>
+	                <th class="col-xs-3 text-center">Organización</th>
+	                <th class="col-xs-2 text-center">Ciudad</th>
+	                <th class="col-xs-2 text-center">Pais</th>
+	              </tr>
+	            </thead>
+	            <tbody>
+							  <tr ng-repeat="location in listVM.locations">
+							  	<!-- rowId -->
+			            <td class="col-xs-1 text-center">
+			              {{ ::location.id }}
+			            </td>
+			            <!-- /rowId -->
+
+			            <!-- date -->
+			            <td class="col-xs-2 text-center">
+			              {{ ::location.created | date : 'dd/MM/yy' }}
+			            </td>
+			            <!-- /date -->
+
+			            <!-- time -->
+			            <td class="col-xs-2 text-center">
+			              {{ ::location.created | date : 'HH:mm' }}
+			            </td>
+			            <!-- /time -->
+
+			            <!-- organization -->
+			            <td class="col-xs-3 text-center">
+			              {{ ::location.organization }}
+			            </td>
+			            <!-- /organization -->
+
+			            <!-- city -->
+			            <td class="col-xs-2 text-center">
+			              {{ ::location.city }}
+			            </td>
+			            <!-- /city -->
+
+			            <!-- country -->
+			            <td class="col-xs-2 text-center">
+			              {{ ::location.country }}
+			            </td>
+			            <!-- /country -->
+			        	</tr>
+	            </tbody>
+						</table>
+					</div>
+				</div>
+		  </div>
+
+      <div class="mastfoot">
+        <div class="inner">
+          <p>Proyecto de la asignatura <a href="">Ingeniería web</a>, realizado por el <a href="">grupo 4</a>.</p>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
