@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-
-
 import javax.servlet.http.HttpServletRequest;
 
 import urlshortener.common.domain.Location;
@@ -57,19 +55,18 @@ public class UrlShortenerControllerWithLogs extends UrlShortenerController {
 	@Override
 	public ResponseEntity<ShortURL> shortener(@RequestParam("url") String url,
 											  @RequestParam(value = "sponsor", required = false) String sponsor,
-											  HttpServletRequest request) {
+											  HttpServletRequest request,
+											  boolean isSafe) {
 		
 		logger.info("Requested new short for uri " + url);
-		
-		SafeBrowsing sb = new SafeBrowsing();
-        try {
-            boolean isSafe = sb.isSafe(url);
-            logger.info("The uri " + url + "is safe? " + isSafe);
-        } 
-        catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-		return super.shortener(url, sponsor, request);
+		try {
+			isSafe = SafeBrowsing.CheckIsSafe(url);
+		} catch (JsonProcessingException e) {
+			logger.info("Error in the SafeBrowsing request");
+			e.printStackTrace();
+		}
+
+		return super.shortener(url, sponsor, request, isSafe);
 	}
 
 	@RequestMapping(value = "/locations", method = RequestMethod.GET)

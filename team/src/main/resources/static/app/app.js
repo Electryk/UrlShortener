@@ -13,6 +13,14 @@ function configStates($stateProvider, $urlRouterProvider) {
         url: '/location',
         controller: 'LocationListCtrl as listVM',
         templateUrl: 'app/location/list.html'
+      })
+      .state('SafeBrowsing', {
+        url: '/SafeBrowsing',
+        params: {
+          uri: null
+        },
+        controller: 'SafeBrowsingCtrl as SafeBrowsingVM',
+        templateUrl: 'app/SafeBrowsing/SafeBrowsing.html'
       });
 
      $urlRouterProvider.otherwise('main');
