@@ -48,6 +48,19 @@
 						<p ng-if="mainVM.error">
 							{{mainVM.shorterUrl}}
 						</p>
+				<div ng-class="{'alert alert-info': !mainVM.errorJson, 'alert alert-danger': mainVM.errorJson}"
+						 	 ng-if="mainVM.browserName !== ''">
+						<a ng-if="!mainVM.errorJson"
+						   class="alert-link">
+						   	{{mainVM.browserName}}
+							{{mainVM.browserVersion}}
+						   	{{mainVM.os}}
+						</a>
+						<p ng-if="mainVM.error">
+							{{mainVM.shorterUrl}}
+						</p>
+						</div>
+			
 					</div>
 					<!-- /Alert -->
 				</div>
