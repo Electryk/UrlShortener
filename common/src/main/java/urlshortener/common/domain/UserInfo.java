@@ -24,4 +24,10 @@ public class UserInfo {
 	public String getOs() {
 		return os;
 	}
+	
+	public String toHtml() {
+		return "<html><body>" + getBrowserName() + 
+				" | " + getbrowserVersion() + 
+				" | " + getOs() + "</body></html>";
+	}
 }

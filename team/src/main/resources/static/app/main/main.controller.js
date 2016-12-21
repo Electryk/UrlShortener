@@ -63,8 +63,7 @@ angular.module('urlShortener.gr4.app')
     };
     
     function getHtmlInfo() {
-    	$window.location.href = '/app/userinfo/userinfo.html';
-
+    	urlShortenerFactory.createHtmlInfo(vm.hash);
     };
      
   };

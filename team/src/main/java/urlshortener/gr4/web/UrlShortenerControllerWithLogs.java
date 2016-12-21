@@ -1,39 +1,36 @@
 package urlshortener.gr4.web;
 
 import org.slf4j.Logger;
+
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.File;
-import java.net.URI;
-import java.sql.Date;
-
+import java.io.IOException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import urlshortener.common.domain.Click;
 import urlshortener.common.domain.Location;
 import urlshortener.common.domain.ShortURL;
-import urlshortener.common.repository.ClickRepository;
+import urlshortener.common.domain.UserInfo;
 import urlshortener.common.repository.LocationRepository;
 import urlshortener.common.web.UrlShortenerController;
 import urlshortener.gr4.googlesafebrowsing.SafeBrowsing;
+import urlshortener.gr4.browseros.BrowserOs;
 
 @RestController
 public class UrlShortenerControllerWithLogs extends UrlShortenerController {
@@ -42,6 +39,8 @@ public class UrlShortenerControllerWithLogs extends UrlShortenerController {
 	
 	@Autowired
 	protected LocationRepository locationRepository;
+	
+	private BrowserOs browserOs = new BrowserOs();
 
 	@Override
 	@RequestMapping(value = "/{id:(?!link|index).*}", method = RequestMethod.GET)
@@ -92,12 +91,26 @@ public class UrlShortenerControllerWithLogs extends UrlShortenerController {
 			logger.info(obj.toString());
 			
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		return obj;
 		
+	}
+	
+	
+	@RequestMapping(value = "/{id:(?!link).*}+.json", method = RequestMethod.GET, produces = "application/json")
+	public @ResponseBody UserInfo getBrowserOsInfoJson(@PathVariable String id,
+			HttpServletRequest request) {
+		return browserOs.getUserInfo(request);
+	
+	}
+	
+	@RequestMapping(value = "/{id:(?!link).*}+.html", method = RequestMethod.GET, produces = "text/html")
+	public @ResponseBody String getInfoPage(@PathVariable String id,
+			HttpServletRequest request, HttpServletResponse response) throws IOException {
+		System.out.println("redireccion");
+		return browserOs.getUserInfo(request).toHtml();
 	}
 	
 	private void createAndSaveLocation(String hash, JSONObject locationIp) {
