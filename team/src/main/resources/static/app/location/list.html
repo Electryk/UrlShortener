@@ -10,8 +10,8 @@
           <nav>
             <ul class="nav masthead-nav">
               <li><a ui-sref="main">Home</a></li>
-              <li class="active"><a href="#">Locations</a></li>
-              <li><a href="#">Contact</a></li>
+              <li class="active"><a ui-sref="location">Location list</a></li>
+              <li><a ui-sref="locationMap">Location Map</a></li>
             </ul>
           </nav>
         </div>
@@ -33,38 +33,48 @@
 
       	<div class="col-xs-6"
       			 style="margin-top: 10px; margin-bottom: 0px;">
-      		<p class="inner">Seleccione <strong>la fecha y hora de inicio:</strong></p>
-      		<div class="col-xs-12">
-			      <p class="input-group">
-			        <input type="text" class="form-control" uib-datepicker-popup ng-model="listVM.dateInit" 
-			        is-open="listVM.opened" datepicker-options="{startingDay: 1}" ng-required="true" close-text="Cerrar" />
-			        <span class="input-group-btn">
-			        	<button type="button" class="btn btn-default" ng-click="listVM.open()"><i class="glyphicon glyphicon-calendar"></i></button>
-			        </span>
-			      </p>
-			    </div>
+      		<div class="checkbox">
+					  <label><input type="checkbox" ng-model="listVM.showFilterInit">Ver a partir de fecha determinada</label>
+					</div>
+					<div ng-if="listVM.showFilterInit">
+	      		<div class="col-xs-12">
+	      			<p class="inner">Seleccione <strong>la fecha y hora de inicio:</strong></p>
+				      <p class="input-group">
+				        <input type="text" class="form-control" uib-datepicker-popup ng-model="listVM.dateInit" 
+				        is-open="listVM.opened" datepicker-options="{startingDay: 1}" ng-required="true" close-text="Cerrar" />
+				        <span class="input-group-btn">
+				        	<button type="button" class="btn btn-default" ng-click="listVM.open()"><i class="glyphicon glyphicon-calendar"></i></button>
+				        </span>
+				      </p>
+				    </div>
 
-			    <div class="col-xs-12">
-		      	<div uib-timepicker ng-model="listVM.dateInit" show-meridian="false"></div>
-		      </div>
+				    <div class="col-xs-12">
+			      	<div uib-timepicker ng-model="listVM.dateInit" show-meridian="false"></div>
+			      </div>
+			    </div>
 		    </div>
 
 		  	<div class="col-xs-6"
       			 style="margin-top: 10px; margin-bottom: 0px;">
-      		<p class="inner">Seleccione <strong>la fecha y hora de fin:</strong></p>
-      		<div class="col-xs-12">
-			      <p class="input-group">
-			        <input type="text" class="form-control" uib-datepicker-popup ng-model="listVM.dateEnd" 
-			        is-open="listVM.opened2" datepicker-options="{startingDay: 1}" ng-required="true" close-text="Cerrar" />
-			        <span class="input-group-btn">
-			        	<button type="button" class="btn btn-default" ng-click="listVM.open2()"><i class="glyphicon glyphicon-calendar"></i></button>
-			        </span>
-			      </p>
-			    </div>
+      		<div class="checkbox">
+					  <label><input type="checkbox" ng-model="listVM.showFilterEnd">Ver hasta una fecha determinada</label>
+					</div>
+					<div ng-if="listVM.showFilterEnd">
+	      		<div class="col-xs-12">
+	      			<p class="inner">Seleccione <strong>la fecha y hora de fin:</strong></p>
+				      <p class="input-group">
+				        <input type="text" class="form-control" uib-datepicker-popup ng-model="listVM.dateEnd" 
+				        is-open="listVM.opened2" datepicker-options="{startingDay: 1}" ng-required="true" close-text="Cerrar" />
+				        <span class="input-group-btn">
+				        	<button type="button" class="btn btn-default" ng-click="listVM.open2()"><i class="glyphicon glyphicon-calendar"></i></button>
+				        </span>
+				      </p>
+				    </div>
 
-			    <div class="col-xs-12">
-		      	<div uib-timepicker ng-model="listVM.dateEnd" show-meridian="false"></div>
-		      </div>
+				    <div class="col-xs-12">
+			      	<div uib-timepicker ng-model="listVM.dateEnd" show-meridian="false"></div>
+			      </div>
+			    </div>
 		    </div>
 		  </div>
 

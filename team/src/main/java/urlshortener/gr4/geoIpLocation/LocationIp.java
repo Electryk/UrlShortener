@@ -76,7 +76,7 @@ public class LocationIp {
 			 * Distinct to IP in public range or IP in private range. The response of the Location API doesn't
 			 * equals in public and private ranges.
 			 */
-			if (locationIp.getString("status").compareTo("success") == 0) {
+			if (locationIp.getString("country").compareTo("private range") != 0) {
 				//Public range
 				location = new Location(hash, locationIp.getString("city"), locationIp.getString("country"),
 					locationIp.getString("lat"), locationIp.getString("lon"), locationIp.getString("ip"),

@@ -1,4 +1,4 @@
-angular.module('urlShortener.gr4.app', ['ui.router', 'ui.bootstrap'])
+angular.module('urlShortener.gr4.app', ['ui.router', 'ui.bootstrap', 'leaflet-directive'])
     .config(configStates);
 
 configStates.$inject = ['$stateProvider', '$urlRouterProvider'];
@@ -13,6 +13,11 @@ function configStates($stateProvider, $urlRouterProvider) {
         url: '/location',
         controller: 'LocationListCtrl as listVM',
         templateUrl: 'app/location/list.html'
+      })
+      .state('locationMap', {
+        url: '/locationMap',
+        controller: 'LocationMapCtrl as mapVM',
+        templateUrl: 'app/location/map.html'
       })
       .state('SafeBrowsing', {
         url: '/SafeBrowsing',
