@@ -51,7 +51,7 @@ public class LocationIp {
 			//Get LAT, LNG and other info associated with this ip.
 			RestTemplate restTemplate = new RestTemplate();
 			ResponseEntity<String> response = 
-				restTemplate.getForEntity("http://ip-api.com/json/" + ip, String.class);
+				restTemplate.getForEntity("http://localhost:9000/" + ip, String.class);
 			
 			//Save the result in JSON Object
 			obj = new JSONObject(response.getBody());

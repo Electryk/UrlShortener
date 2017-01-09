@@ -7,8 +7,12 @@ buildscript {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:1.4.0.RELEASE")
     }
 }
+apply plugin: 'java'
 apply plugin: "spring-boot"
 apply plugin: 'eclipse-wtp'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 eclipse {
    project {
