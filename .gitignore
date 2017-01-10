@@ -2,7 +2,6 @@
 build/
 .metadata/
 .recommenders/
-geo-location-ip/node_modules
 
 # Ignore Gradle GUI config
 gradle-app.setting
