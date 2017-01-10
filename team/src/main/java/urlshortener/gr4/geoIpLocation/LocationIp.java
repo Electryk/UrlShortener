@@ -49,13 +49,24 @@ public class LocationIp {
 		JSONObject obj = null;
 		try {
 			//Get LAT, LNG and other info associated with this ip.
-			RestTemplate restTemplate = new RestTemplate();
-			ResponseEntity<String> response = 
-				restTemplate.getForEntity("http://localhost:9000/" + ip, String.class);
-			
-			//Save the result in JSON Object
-			obj = new JSONObject(response.getBody());
-			obj.put("ip", ip);
+			if (ip.compareTo("127.0.0.1") != 0) {
+				RestTemplate restTemplate = new RestTemplate();
+				ResponseEntity<String> response = 
+					restTemplate.getForEntity("http://localhost:9000/" + ip, String.class);
+				
+				//Save the result in JSON Object
+				obj = new JSONObject(response.getBody());
+				obj.put("ip", ip);
+			} else {
+				Timestamp date = new Timestamp(System.currentTimeMillis());
+				String privateRangeIp = "{\"ip\":\"127.0.0.1\",\"dateTime\":\"" + date + "\",\"country\":\"private range\"}";
+				
+				System.out.println(privateRangeIp);
+				//Save the result in JSON Object
+				obj = new JSONObject(privateRangeIp);
+				obj.put("ip", ip);
+			}
+
 			
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block

@@ -45,6 +45,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @RunWith(SpringRunner.class)
@@ -102,40 +103,6 @@ public class SystemTests {
 						+ "/f684a3c4", String.class);
 		assertThat(entity.getStatusCode(), is(HttpStatus.TEMPORARY_REDIRECT));
 		assertThat(entity.getHeaders().getLocation(), is(new URI("http://example.com/")));
-	}
-	
-	@Test
-	public void testLocationPublicIP() throws Exception {
-		//IP PUBLICA DE PRUEBA = 155.210.211.33
-		String IP = "155.210.211.33";
-		JSONObject location = locationIp.getLocationByIP(IP);
-		
-		assertEquals(location.getString("status"), "success");
-		assertEquals(location.has("city"), true);
-		assertEquals(location.has("country"), true);
-		assertEquals(location.has("lat"), true);
-		assertEquals(location.has("lon"), true);
-		assertEquals(location.has("ip"), true);
-		assertEquals(location.has("regionName"), true);
-		assertEquals(location.has("org"), true);
-	}
-	
-	@Test
-	public void testLocationPrivateIP() throws Exception {
-		//IP PUBLICA DE PRUEBA = 127.0.0.1
-		String IP = "127.0.0.1";
-		JSONObject location = locationIp.getLocationByIP(IP);
-
-		assertEquals(location.getString("status"), "fail");
-		assertEquals(location.has("ip"), true);
-		assertEquals(location.has("message"), true);
-		assertEquals(location.getString("message"), "reserved range");
-		assertEquals(location.has("city"), false);
-		assertEquals(location.has("country"), false);
-		assertEquals(location.has("lat"), false);
-		assertEquals(location.has("lon"), false);
-		assertEquals(location.has("regionName"), false);
-		assertEquals(location.has("org"), false);
 	}
 
 	@Test
