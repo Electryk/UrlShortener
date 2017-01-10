@@ -14,11 +14,6 @@ function configStates($stateProvider, $urlRouterProvider) {
         controller: 'LocationListCtrl as listVM',
         templateUrl: 'app/location/list.html'
       })
-      .state('locationMap', {
-        url: '/locationMap',
-        controller: 'LocationMapCtrl as mapVM',
-        templateUrl: 'app/location/map.html'
-      })
       .state('SafeBrowsing', {
         url: '/SafeBrowsing',
         params: {

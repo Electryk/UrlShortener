@@ -10,14 +10,13 @@
           <nav>
             <ul class="nav masthead-nav">
               <li><a ui-sref="main">Home</a></li>
-              <li class="active"><a ui-sref="location">Location list</a></li>
-              <li><a ui-sref="locationMap">Location Map</a></li>
+              <li class="active"><a ui-sref="location">Locations</a></li>
             </ul>
           </nav>
         </div>
       </div>
 
-      <div class="row">
+      <div class="row" ng-if="listVM.findDiv">
 	    	<p class="lead">Inserte un patrón URI para ver las localizaciones asociadas.</p>
 	    	<div class="input-group col-xs-12">
 		      <input type="text"
@@ -79,8 +78,24 @@
 		  </div>
 
 		  <div class="row">
+		  	<!-- botones seleccion -->
+		  	<div class="btn-group" role="group">
+				  <button type="button" 
+				  				ng-class="{'btn btn-default': !listVM.tableBtn, 'btn btn-success': listVM.tableBtn}" 
+				  				ng-click="listVM.clickListBtn()">Tabla</button>
+				  <button type="button" 
+								  ng-class="{'btn btn-default': !listVM.mapBtn, 'btn btn-success': listVM.mapBtn}" 
+								  ng-click="listVM.clickMapBtn()">Mapa</button>
+					<button type="button" 
+								  class="btn btn-primary"
+								  ng-show="!listVM.findDiv"
+								  ng-click="listVM.clickFindBtn()">Buscar</button>
+				</div>
+				<!--/ botones seleccion -->
+
+				<!-- tabla -->
 		  	<div class="panel panel-default mt-sm"
-		  			 ng-if="listVM.locations.length !== 0"
+		  			 ng-if="listVM.locations.length !== 0 && listVM.tableBtn"
 		  			 style="margin-top: 10px">
 		  		<div class="panel-heading">
 				    <table class="table table-striped">
@@ -136,6 +151,15 @@
 						</table>
 					</div>
 				</div>
+				<!--/ tabla -->
+
+				<!-- mapa -->
+				<div class="text-center"
+						 ng-if="listVM.mapBtn"
+						 style="margin-top: 10px">
+	      	<leaflet height="440px" width="700px" center="listVM.center" id="map"></leaflet>
+	      </div>
+	      <!--/ mapa -->
 		  </div>
 
       <div class="mastfoot">
