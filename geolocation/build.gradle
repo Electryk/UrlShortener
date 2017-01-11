@@ -13,19 +13,6 @@ apply plugin: "com.moowork.node"
 
 import org.gradle.api.tasks.Exec
 
-// Get the path for the locally installed binaries
-task npmBin << {
-    new ByteArrayOutputStream().withStream { os ->
-        def result = exec {
-            executable = 'npm'
-            args = ['bin']
-            standardOutput = os
-        }
-        ext.binPath = os.toString().trim() + "/"
-    }
-}
-
-
 // Install packages from package.json
 task npm(type: Exec) {
     description = "Grab NodeJS dependencies (from package.json)"
@@ -34,8 +21,6 @@ task npm(type: Exec) {
     outputs.dir "node_modules"
 
     println tasks.getByPath(':geolocation:npm').path
-    tasks.npmBin.execute()
-
 }
 
 // Execute server
