@@ -18,10 +18,13 @@ import java.util.List;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.sql.Date;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import urlshortener.common.domain.Click;
 import urlshortener.common.domain.Location;
 import urlshortener.common.domain.ShortURL;
 
@@ -31,7 +34,7 @@ import org.json.JSONObject;
 import urlshortener.common.domain.Location;
 import urlshortener.common.domain.ShortURL;
 import urlshortener.common.domain.UserInfo;
-
+import urlshortener.common.repository.ClickRepository;
 import urlshortener.common.repository.LocationRepository;
 import urlshortener.common.web.UrlShortenerController;
 import urlshortener.gr4.geoIpLocation.LocationIp;
@@ -43,11 +46,15 @@ public class UrlShortenerControllerWithLogs extends UrlShortenerController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(UrlShortenerControllerWithLogs.class);
 	private LocationIp locationIp = new LocationIp();
+	private BrowserOs browserOs = new BrowserOs();
 	
 	@Autowired
 	protected LocationRepository locationRepository;
 	
-	private BrowserOs browserOs = new BrowserOs();
+	@Autowired
+	protected ClickRepository clickRepository;
+	
+
 
 	@Override
 	@RequestMapping(value = "/{id:(?!link|index|locations).*}", method = RequestMethod.GET)
@@ -61,13 +68,28 @@ public class UrlShortenerControllerWithLogs extends UrlShortenerController {
 		} else {
 			hash = id;
 		}
+		
+		String ip = request.getRemoteAddr();
+		locationIp.saveLocation(ip, hash, locationRepository);
+		String browser = browserOs.getBrowser(request);
+		String version = browserOs.getVersion(request);
+		String platform = browserOs.getPlatform(request);
+		createAndSaveClick(id, ip, browser, version, platform);
 
 		//Get the associated location to ip and save in the data base.
-		String ip = request.getRemoteAddr();
 		locationIp.saveLocation(ip, hash, locationRepository);
 				
 		return super.redirectTo(id, request);
 	}
+	
+	private void createAndSaveClick(String hash, String ip, String browser, String version, String platform) {
+		  Click cl = new Click(null, hash, new Date(System.currentTimeMillis()),
+		      null, browser + " " + version, platform, ip, null);
+		  cl=clickRepository.save(cl);
+		  logger.info(cl!=null?"["+hash+"] saved with id ["+cl.getId()+"]":"["+hash+"] was not saved");
+		  logger.info(cl!=null?"Click: " + hash + " | " + browser + " | " + version + " | " + platform + " | " + ip:"["+hash+"] was not saved");
+
+		}
 
 	@Override
 	public ResponseEntity<ShortURL> shortener(@RequestParam("url") String url,
@@ -95,6 +117,24 @@ public class UrlShortenerControllerWithLogs extends UrlShortenerController {
 		List<Location> list = locationIp.getLocationsByHash(pattern, dateInit, dateEnd, locationRepository);
 
 		return new ResponseEntity<List<Location>>(list, HttpStatus.OK);		
+	}
+	
+	@RequestMapping(value = "/userinfo", method = RequestMethod.GET)
+	public ResponseEntity<List<Click>> getUserinfo(@RequestParam("pattern") String pattern, 
+													   @RequestParam("dateInit") Long dateInit,
+													   @RequestParam("dateEnd") Long dateEnd) {
+
+		//Get an ArrayList of Locations
+		List<Click> list = browserOs.getClicksByHash(pattern, dateInit, dateEnd, clickRepository);
+		System.out.println("LISTA: ");
+			System.out.println("Elemento: ");
+			for (Click c : list) {
+				System.out.println("HORA: " + c.getCreated() + " | HASH: " + c.getHash() + " | BROWSER: " + c.getBrowser() + 
+						" | PLATFORM: " + c.getPlatform() + " | IP: " + c.getIp());
+
+			}
+			
+		return new ResponseEntity<List<Click>>(list, HttpStatus.OK);		
 	}
 	
 	@RequestMapping(value = "/{id:(?!link).*}+.json", method = RequestMethod.GET, produces = "application/json")

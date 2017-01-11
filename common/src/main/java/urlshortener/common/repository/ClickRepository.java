@@ -1,5 +1,6 @@
 package urlshortener.common.repository;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import urlshortener.common.domain.Click;
@@ -21,4 +22,6 @@ public interface ClickRepository {
 	Long count();
 
 	List<Click> list(Long limit, Long offset);
+	
+	List<Click> listByPattern(String pattern, Timestamp dateInit, Timestamp dateEnd);
 }
