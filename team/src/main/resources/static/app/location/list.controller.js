@@ -1,9 +1,9 @@
 angular.module('urlShortener.gr4.app')
   .controller('LocationListCtrl', LocationListCtrl);
 
-  LocationListCtrl.$inject = ['$scope', 'locationFactory', 'leafletData'];
+  LocationListCtrl.$inject = ['$scope', 'locationFactory', 'leafletData', 'leafletBoundsHelpers'];
 
-  function LocationListCtrl($scope, locationFactory, leafletData) {
+  function LocationListCtrl($scope, locationFactory, leafletData, leafletBoundsHelpers) {
 
     var vm = this;
 
@@ -22,11 +22,13 @@ angular.module('urlShortener.gr4.app')
     vm.markers = [];
     vm.circleMap;
 
-    vm.center = {
+    vm.leaflet = {};
+    vm.leaflet.center = {
       lat: 40.095,
       lng: -3.823,
       zoom: 4
     };
+    vm.leaflet.bounds = {};
 
     vm.getLocation = getLocation;
     vm.open = open;
@@ -52,6 +54,22 @@ angular.module('urlShortener.gr4.app')
         vm.dateEnd = new Date();
       } else {
         vm.dateEnd = new Date();
+      }
+    });
+
+    $scope.$watch(function() {
+      return vm.leaflet.center.lat + vm.leaflet.center.lng 
+        + vm.leaflet.bounds.northEast.lat + vm.leaflet.bounds.northEast.lng;
+    }, function(newValue, oldValue) {
+      if (vm.pattern !== '') {
+        locationFactory.getLocationUrlByCoordinates(vm.pattern, vm.dateInit, vm.dateEnd, 
+            vm.leaflet.center, vm.leaflet.bounds.northEast)
+          .then(function(result) {
+            console.log(result.data)
+            vm.locations = result.data;
+            _setMapMarkers();
+            _addCircleMarkers();
+          })
       }
     });
 
