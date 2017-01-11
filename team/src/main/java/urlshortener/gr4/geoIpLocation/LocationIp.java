@@ -25,7 +25,7 @@ public class LocationIp {
 	 * this info in the data base.
 	 */
 	public void saveLocation(String ip, String hash, LocationRepository locationRepository) {
-		JSONObject locationIp = getLocationByIP("155.210.212.183");
+		JSONObject locationIp = getLocationByIP(ip);
 		createAndSaveLocation(hash, locationIp, locationRepository);
 	}
 	
