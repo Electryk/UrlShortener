@@ -137,6 +137,12 @@ public class UrlShortenerControllerWithLogs extends UrlShortenerController {
 		return new ResponseEntity<List<Click>>(list, HttpStatus.OK);		
 	}
 	
+	@RequestMapping(value = "/getUniqueUsers", method = RequestMethod.GET)
+	public Integer getUserinfo() {
+		return browserOs.getUniqueUsers(clickRepository);
+
+	}
+	
 	@RequestMapping(value = "/{id:(?!link).*}+.json", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody UserInfo getBrowserOsInfoJson(@PathVariable String id,
 			HttpServletRequest request) {

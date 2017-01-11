@@ -176,5 +176,14 @@ public class ClickRepositoryImpl implements ClickRepository {
 	    return null;
 	  }
 	}
+	
+	@Override
+	public Integer getUniqueUsers() {
+		try {
+			return jdbc.queryForObject("SELECT COUNT(DISTINCT ip) FROM click", Integer.class);
+		} catch (Exception e) {
+			return null;
+		}
+	}
 
 }

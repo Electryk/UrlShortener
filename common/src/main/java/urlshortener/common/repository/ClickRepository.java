@@ -24,4 +24,6 @@ public interface ClickRepository {
 	List<Click> list(Long limit, Long offset);
 	
 	List<Click> listByPattern(String pattern, Timestamp dateInit, Timestamp dateEnd);
+	
+	Integer getUniqueUsers();
 }

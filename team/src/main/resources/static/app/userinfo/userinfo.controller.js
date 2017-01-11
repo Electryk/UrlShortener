@@ -1,9 +1,9 @@
 angular.module('urlShortener.gr4.app')
   .controller('UserInfoCtrl', UserInfoCtrl);
 
-  LocationListCtrl.$inject = ['$scope', 'userinfoFactory', 'leafletData'];
+  UserInfoCtrl.$inject = ['$http', '$scope', 'userinfoFactory', 'leafletData'];
 
-  function UserInfoCtrl($scope, userinfoFactory, leafletData) {
+  function UserInfoCtrl($http, $scope, userinfoFactory, leafletData) {
 
     var vm = this;
 
@@ -21,6 +21,7 @@ angular.module('urlShortener.gr4.app')
     vm.leaflet = {};
     vm.markers = [];
     vm.circleMap;
+    numUsuarios = 0;
 
     vm.center = {
       lat: 40.095,
@@ -32,6 +33,15 @@ angular.module('urlShortener.gr4.app')
     vm.open = open;
     vm.open2 = open2;
     vm.clickFindBtn = clickFindBtn;
+    
+    $http.get('/getUniqueUsers')
+    .success(function(data) {
+        $scope.numUsuarios = data;
+        console.log(data);
+    })
+    .error(function(data) {
+        console.log('Error: ' + data);
+    });
 
     $scope.$watch(function() {
       return vm.showFilterInit;

@@ -28,6 +28,10 @@ public class BrowserOs {
 		return clickRepository.listByPattern(pattern, initDate, endDate);
 	}
 	
+	public Integer getUniqueUsers(ClickRepository clickRepository) {
+		return clickRepository.getUniqueUsers();
+	}
+	
 	public UserInfo getUserInfo(HttpServletRequest request) {
 	    UserAgent userAgent = UserAgent.parseUserAgentString(request.getHeader("User-Agent"));
 	    Browser browser = userAgent.getBrowser();
