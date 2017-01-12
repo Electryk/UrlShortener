@@ -1,5 +1,9 @@
 package urlshortener.gr4.geoIpLocation;
 
+import org.slf4j.Logger;
+
+import org.slf4j.LoggerFactory;
+
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.ArrayList;
@@ -14,6 +18,8 @@ import urlshortener.common.domain.Location;
 import urlshortener.common.repository.LocationRepository;
 
 public class LocationIp {
+
+	private static final Logger logger = LoggerFactory.getLogger(LocationIp.class);
 	
 	/**
 	 * This function is the construct of the object associated with the geoLocation functionality.
