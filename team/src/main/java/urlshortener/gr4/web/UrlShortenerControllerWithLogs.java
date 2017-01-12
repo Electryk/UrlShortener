@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.ArrayList;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -111,12 +112,22 @@ public class UrlShortenerControllerWithLogs extends UrlShortenerController {
 	@RequestMapping(value = "/locations", method = RequestMethod.GET)
 	public ResponseEntity<List<Location>> getLocations(@RequestParam("pattern") String pattern, 
 													   @RequestParam("dateInit") Long dateInit,
-													   @RequestParam("dateEnd") Long dateEnd) {
+													   @RequestParam("dateEnd") Long dateEnd,
+													   @RequestParam("center") String center,
+													   @RequestParam("limitPoint") String limitPoint) {
+		if (pattern.compareTo("") != 0) {
+			//Get an ArrayList of Locations
+			List<Location> list = locationIp.getLocationsByHash(pattern, dateInit, dateEnd, locationRepository);
 
-		//Get an ArrayList of Locations
-		List<Location> list = locationIp.getLocationsByHash(pattern, dateInit, dateEnd, locationRepository);
-
-		return new ResponseEntity<List<Location>>(list, HttpStatus.OK);		
+			if (center.compareTo("") == 0 && limitPoint.compareTo("") == 0) {
+				return new ResponseEntity<List<Location>>(list, HttpStatus.OK);
+			} else {
+				list = locationIp.getCorrectListByArea(list, center, limitPoint);
+				return new ResponseEntity<List<Location>>(list, HttpStatus.OK);
+			}		
+		} else {
+			return new ResponseEntity<List<Location>>(new ArrayList<Location>(), HttpStatus.OK);
+		}
 	}
 	
 	@RequestMapping(value = "/userinfo", method = RequestMethod.GET)

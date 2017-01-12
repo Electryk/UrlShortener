@@ -6,7 +6,8 @@ angular.module('urlShortener.gr4.app')
   function locationFactory($http) {
 
     var factory = {
-      getLocationUrl: getLocationUrl
+      getLocationUrl: getLocationUrl,
+      getLocationUrlByCoordinates: getLocationUrlByCoordinates
     };
 
     function getLocationUrl(pattern, dateInit, dateEnd) {
@@ -16,7 +17,23 @@ angular.module('urlShortener.gr4.app')
         params: {
           pattern: pattern,
           dateInit: dateInit.getTime(),
-          dateEnd: dateEnd.getTime()
+          dateEnd: dateEnd.getTime(),
+          center: '',
+          limitPoint: ''
+        }
+      });
+    };
+
+    function getLocationUrlByCoordinates(pattern, dateInit, dateEnd, center, limitPoint) {
+      return $http({
+        method: 'GET',
+        url: 'http://localhost:8080/locations',
+        params: {
+          pattern: pattern,
+          dateInit: dateInit.getTime(),
+          dateEnd: dateEnd.getTime(),
+          center: JSON.stringify(center),
+          limitPoint: JSON.stringify(limitPoint)
         }
       });
     };

@@ -2,6 +2,8 @@ package urlshortener.gr4.geoIpLocation;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.ArrayList;
+import java.lang.Math;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,8 +54,8 @@ public class LocationIp {
 			if (ip.compareTo("127.0.0.1") != 0) {
 				RestTemplate restTemplate = new RestTemplate();
 				ResponseEntity<String> response = 
-					restTemplate.getForEntity("http://localhost:9000/" + ip, String.class);
-				
+					restTemplate.getForEntity("http://localhost:9000/" + ip, String.class);				
+
 				//Save the result in JSON Object
 				obj = new JSONObject(response.getBody());
 				obj.put("ip", ip);
@@ -112,5 +114,50 @@ public class LocationIp {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * This fucntion get an ArrayList of all Locations associated to area 
+	 * of a circle which radious is formated by center and limitPoint.
+	 */
+	public List<Location> getCorrectListByArea(List<Location> list, String center, String limitPoint) {
+		try {
+			JSONObject centerObj = new JSONObject(center);
+			JSONObject limitPointObj = new JSONObject(limitPoint);
+
+			//Calculate radious of two points.
+			double x = limitPointObj.getDouble("lat") - centerObj.getDouble("lat");
+			double y = limitPointObj.getDouble("lng") - centerObj.getDouble("lng");
+			double radious = Math.sqrt(Math.pow(x, 2.0) + Math.pow(y, 2.0));
+			
+			List<Location> listAux = new ArrayList<Location>();
+
+			for (int i = 0; i < list.size(); i++) {
+				//Calculate the radious
+				String lat = list.get(i).getLatitude();
+				String lng = list.get(i).getLongitude();
+
+				if (lat != null && lng != null) {
+					Double pointX = Double.parseDouble(lat);
+					Double pointY = Double.parseDouble(lng);
+					x = pointX - centerObj.getDouble("lat");
+					y = pointY - centerObj.getDouble("lng");
+
+					Double radiousIp = Math.sqrt(Math.pow(x, 2.0) + Math.pow(y, 2.0));
+
+					if (radiousIp <= radious) {
+						listAux.add(list.get(i));
+					}
+				}
+			}
+
+			list = listAux;
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return list;
 	}
 }
