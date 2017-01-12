@@ -137,13 +137,13 @@ public class UrlShortenerControllerWithLogs extends UrlShortenerController {
 
 		//Get an ArrayList of Locations
 		List<Click> list = browserOs.getClicksByHash(pattern, dateInit, dateEnd, clickRepository);
-		System.out.println("LISTA: ");
-			System.out.println("Elemento: ");
-			for (Click c : list) {
-				System.out.println("HORA: " + c.getCreated() + " | HASH: " + c.getHash() + " | BROWSER: " + c.getBrowser() + 
-						" | PLATFORM: " + c.getPlatform() + " | IP: " + c.getIp());
+		logger.info("LISTA: ");
+		logger.info("Elemento: ");
+		for (Click c : list) {
+			logger.info("HORA: " + c.getCreated() + " | HASH: " + c.getHash() + " | BROWSER: " + c.getBrowser() + 
+					" | PLATFORM: " + c.getPlatform() + " | IP: " + c.getIp());
 
-			}
+		}
 			
 		return new ResponseEntity<List<Click>>(list, HttpStatus.OK);		
 	}
@@ -156,15 +156,15 @@ public class UrlShortenerControllerWithLogs extends UrlShortenerController {
 	
 	@RequestMapping(value = "/{id:(?!link).*}+.json", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody UserInfo getBrowserOsInfoJson(@PathVariable String id,
-			HttpServletRequest request) {
+		HttpServletRequest request) {
 		return browserOs.getUserInfo(request);
 	
 	}
 	
 	@RequestMapping(value = "/{id:(?!link).*}+.html", method = RequestMethod.GET, produces = "text/html")
 	public @ResponseBody String getInfoPage(@PathVariable String id,
-			HttpServletRequest request, HttpServletResponse response) throws IOException {
-		System.out.println("redireccion");
+		HttpServletRequest request, HttpServletResponse response) throws IOException {
+		logger.info("redireccion");
 		return browserOs.getUserInfo(request).toHtml();
 	}
 }

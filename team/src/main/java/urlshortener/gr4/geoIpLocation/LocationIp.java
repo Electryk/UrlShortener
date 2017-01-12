@@ -63,7 +63,6 @@ public class LocationIp {
 				Timestamp date = new Timestamp(System.currentTimeMillis());
 				String privateRangeIp = "{\"ip\":\"127.0.0.1\",\"dateTime\":\"" + date + "\",\"country\":\"private range\"}";
 				
-				System.out.println(privateRangeIp);
 				//Save the result in JSON Object
 				obj = new JSONObject(privateRangeIp);
 				obj.put("ip", ip);
@@ -106,9 +105,9 @@ public class LocationIp {
 			//Save the location in the data base.
 			location = locationRepository.save(location);
 			
-			System.out.println(location!=null?"["+hash+"] saved with id [" + location.getId() 
+			logger.info(location!=null?"["+hash+"] saved with id [" + location.getId() 
 				+ " in Location]" : "[" + hash + "] was not saved");
-			System.out.println(location.toString());
+			logger.info(location.toString());
 			
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block

@@ -46,7 +46,7 @@ public class UrlShortenerController {
 		ShortURL l = shortURLRepository.findByKey(id);
 		if (l != null) {
 			shortURLRepository.incCount(l);
-			System.out.println("COUNT: " + l.getCount());
+			logger.info("COUNT: " + l.getCount());
 			return createSuccessfulRedirectToResponse(l);
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);

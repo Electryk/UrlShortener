@@ -43,27 +43,27 @@ public class SafeBrowsing {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity request= new HttpEntity(requestJson, headers );
 
-        System.out.println("\nREQUEST TO GOOGLE SAFE BROWSING:");
-        System.out.println(requestJson);
+        logger.info("\nREQUEST TO GOOGLE SAFE BROWSING:");
+        logger.info(requestJson);
         ResponseEntity<ResponseFormat> response = restTemplate.exchange(urlBase, HttpMethod.POST, request, ResponseFormat.class);
         String jsonRespuesta = mapper.writeValueAsString(response);
-        System.out.println("RESPONSE FROM  GOOGLE SAFE BROWSING:");
-        System.out.println(jsonRespuesta+"\n");
+        logger.info("RESPONSE FROM  GOOGLE SAFE BROWSING:");
+        logger.info(jsonRespuesta+"\n");
         
         boolean isSafe = false;
         
         if(response.getStatusCodeValue() == 200) {                        
             if(response.getBody().getMatches().isEmpty()) {
-                System.out.println("THE URL " + url + " IS SAFE");
+                logger.info("THE URL " + url + " IS SAFE");
                 isSafe = true;
             }
             else {
-                System.out.println("THE URL " + url + " IS UNSAFE");
+                logger.info("THE URL " + url + " IS UNSAFE");
             }
         }
         else
         {
-        	System.out.println("CONNECTION COULD NOT ESTABLISHED. CODE: "+response.getStatusCodeValue());
+        	logger.info("CONNECTION COULD NOT ESTABLISHED. CODE: "+response.getStatusCodeValue());
         }       
         return isSafe;
     }
