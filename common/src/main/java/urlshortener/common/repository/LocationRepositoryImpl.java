@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.List;
+import java.sql.Timestamp;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +35,7 @@ public class LocationRepositoryImpl implements LocationRepository {
 		public Location mapRow(ResultSet rs, int rowNum) throws SQLException {
 			return new Location(rs.getString("hash"), rs.getString("city"), rs.getString("country"),
 					rs.getString("lat"), rs.getString("lng"), rs.getString("ip"),
-					rs.getString("region"), rs.getString("organization"), rs.getLong("id"));
+					rs.getString("region"), rs.getString("organization"), rs.getLong("id"), rs.getTimestamp("created"));
 		}
 	};
 
@@ -70,7 +71,7 @@ public class LocationRepositoryImpl implements LocationRepository {
 						throws SQLException {
 					PreparedStatement ps = conn
 							.prepareStatement(
-									"INSERT INTO LOCATION VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+									"INSERT INTO LOCATION VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 									Statement.RETURN_GENERATED_KEYS);
 					ps.setNull(1, Types.BIGINT);
 					ps.setString(2, loc.getShortURL());
@@ -80,7 +81,8 @@ public class LocationRepositoryImpl implements LocationRepository {
 					ps.setString(6, loc.getLatitude());
 					ps.setString(7, loc.getLongitude());
 					ps.setString(8, loc.getRegionName());
-					ps.setString(9, loc.getOrganization());
+					ps.setTimestamp(9, loc.getCreated());
+					ps.setString(10, loc.getOrganization());
 					return ps;
 				}
 			}, holder);
@@ -102,10 +104,10 @@ public class LocationRepositoryImpl implements LocationRepository {
 		int numRowsUpdated = 0;
 		try {
 			numRowsUpdated = jdbc.update(
-					"update location set hash=?, city=?, country=?, ip=?, lat=?, lng=?, region=?, organization=? where id=?",
+					"update location set hash=?, city=?, country=?, ip=?, lat=?, lng=?, region=?, created=?, organization=? where id=?",
 					location.getShortURL(), location.getCity(), location.getCountry(),
 					location.getIp(), location.getLatitude(), location.getLongitude(),
-					location.getRegionName(), location.getOrganization(), location.getId());
+					location.getRegionName(), location.getCreated(), location.getOrganization(), location.getId());
 			
 		} catch (Exception e) {
 			log.info("When update for id " + location.getId(), e);
@@ -155,4 +157,29 @@ public class LocationRepositoryImpl implements LocationRepository {
 		}
 	}
 
+	@Override
+	public List<Location> listByRange(String hash, Timestamp dateInit, Timestamp dateEnd) {
+		try {
+			return jdbc.query("SELECT * FROM location WHERE hash=? and created >= ? and created < ?",
+					new Object[] { hash, dateInit, dateEnd }, rowMapper);
+		} catch (Exception e) {
+			log.debug("When select for created >= " + dateInit + " and created <= "
+					+ dateEnd, e);
+			return null;
+		}
+	}
+	
+	@Override
+	public List<Location> listByPattern(String pattern, Timestamp dateInit, Timestamp dateEnd) {
+		try {
+			String patternNew = "%" + pattern + "%";
+			return jdbc.query("SELECT l.hash, l.city, l.country, l.ip, l.lat, l.lng,"
+					+ " l.region, l.created, l.organization, l.id FROM location l, shorturl u"
+					+ " WHERE u.target LIKE ? and l.hash = u.hash and l.created >= ? and l.created < ?",
+					new Object[] { patternNew, dateInit, dateEnd }, rowMapper);
+		} catch (Exception e) {
+			log.debug("When select for pattern " + pattern, e);
+			return null;
+		}
+	}
 }

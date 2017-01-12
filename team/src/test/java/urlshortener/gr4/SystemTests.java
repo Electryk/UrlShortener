@@ -8,11 +8,12 @@ import urlshortener.common.domain.googlesafebrowsing.RequestFormat;
 import urlshortener.common.domain.googlesafebrowsing.ResponseFormat;
 import urlshortener.common.domain.googlesafebrowsing.ThreatEntry;
 import urlshortener.common.domain.googlesafebrowsing.ThreatInfo;
-
+import urlshortener.gr4.geoIpLocation.LocationIp;
 import urlshortener.gr4.web.UrlShortenerControllerWithLogs;
 
 import org.json.JSONObject;
 import urlshortener.common.domain.ShortURL;
+import urlshortener.common.repository.LocationRepository;
 import urlshortener.common.repository.ShortURLRepository;
 
 import org.junit.Test;
@@ -44,6 +45,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @RunWith(SpringRunner.class)
@@ -56,6 +58,10 @@ public class SystemTests {
 	
 	@Autowired
 	protected ShortURLRepository shortURLRepository;
+	
+	@Autowired
+	protected LocationRepository locationRepository;
+	LocationIp locationIp = new LocationIp();
 
 	@Test
 	public void testHome() throws Exception {
@@ -80,11 +86,11 @@ public class SystemTests {
 	public void testCreateLink() throws Exception {
 		ResponseEntity<String> entity = postLink("http://example.com/");
 		assertThat(entity.getStatusCode(), is(HttpStatus.CREATED));
-		assertThat(entity.getHeaders().getLocation(), is(new URI("http://localhost:"+ this.port+"/f684a3c4+Unknown+DownloadingTool+test")));
+		assertThat(entity.getHeaders().getLocation(), is(new URI("http://localhost:"+ this.port+"/f684a3c4")));
 		assertThat(entity.getHeaders().getContentType(), is(new MediaType("application", "json", Charset.forName("UTF-8"))));
 		ReadContext rc = JsonPath.parse(entity.getBody());
 		assertThat(rc.read("$.hash"), is("f684a3c4"));
-		assertThat(rc.read("$.uri"), is("http://localhost:"+ this.port+"/f684a3c4+Unknown+DownloadingTool+test"));
+		assertThat(rc.read("$.uri"), is("http://localhost:"+ this.port+"/f684a3c4"));
 		assertThat(rc.read("$.target"), is("http://example.com/"));
 		assertThat(rc.read("$.sponsor"), is(nullValue()));
 	}
@@ -98,42 +104,6 @@ public class SystemTests {
 		assertThat(entity.getStatusCode(), is(HttpStatus.TEMPORARY_REDIRECT));
 		assertThat(entity.getHeaders().getLocation(), is(new URI("http://example.com/")));
 	}
-	
-	@Test
-	public void testLocationPublicIP() throws Exception {
-		//IP PUBLICA DE PRUEBA = 155.210.211.33
-		String IP = "155.210.211.33";
-		UrlShortenerControllerWithLogs UrlSC = new UrlShortenerControllerWithLogs();
-		JSONObject location = UrlSC.getLocationByIP(IP);
-		
-		assertEquals(location.getString("status"), "success");
-		assertEquals(location.has("city"), true);
-		assertEquals(location.has("country"), true);
-		assertEquals(location.has("lat"), true);
-		assertEquals(location.has("lon"), true);
-		assertEquals(location.has("ip"), true);
-		assertEquals(location.has("regionName"), true);
-		assertEquals(location.has("org"), true);
-	}
-	
-	@Test
-	public void testLocationPrivateIP() throws Exception {
-		//IP PUBLICA DE PRUEBA = 127.0.0.1
-		String IP = "127.0.0.1";
-		UrlShortenerControllerWithLogs UrlSC = new UrlShortenerControllerWithLogs();
-		JSONObject location = UrlSC.getLocationByIP(IP);
-
-		assertEquals(location.getString("status"), "fail");
-		assertEquals(location.has("ip"), true);
-		assertEquals(location.has("message"), true);
-		assertEquals(location.getString("message"), "reserved range");
-		assertEquals(location.has("city"), false);
-		assertEquals(location.has("country"), false);
-		assertEquals(location.has("lat"), false);
-		assertEquals(location.has("lon"), false);
-		assertEquals(location.has("regionName"), false);
-		assertEquals(location.has("org"), false);
-	}
 
 	@Test
 	public void testGoogleSafeBrowsing_SafeURL() throws Exception {
@@ -144,7 +114,7 @@ public class SystemTests {
         
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity request= new HttpEntity(requestJson, headers );
+        HttpEntity request= new HttpEntity(requestJson, headers);
 
         ResponseEntity<ResponseFormat> response = new RestTemplate().exchange(urlBase, HttpMethod.POST, request, ResponseFormat.class);
         String jsonRespuesta = new ObjectMapper().writeValueAsString(response);

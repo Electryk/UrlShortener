@@ -1,3 +1,8 @@
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
 // Common project specific stuff
 eclipse {
    project {
@@ -13,12 +18,18 @@ dependencies {
     
     compile 'org.apache.commons:commons-lang3:3.4'
     compile 'eu.bitwalker:UserAgentUtils:1.14'
+    
+    compile group: 'org.json', name: 'json', version: '20090211'
+    
+    
 
     compile 'commons-validator:commons-validator:1.5.1'
-	  compile 'com.google.guava:guava:19.0'
+	compile 'com.google.guava:guava:19.0'
+	compile group: 'org.json', name: 'json', version: '20090211'
 
     testCompile 'org.springframework.boot:spring-boot-starter-test:1.4.0.RELEASE'
     testCompile 'com.jayway.jsonpath:json-path:2.2.0'
+    testCompile group: 'org.json', name: 'json', version: '20090211'
     testRuntime 'org.hsqldb:hsqldb:2.3.4'
 
 }

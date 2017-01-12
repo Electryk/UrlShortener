@@ -1,0 +1,39 @@
+<div class="site-wrapper">
+
+  <div class="site-wrapper-inner">
+
+    <div class="cover-container">
+
+      <div class="masthead clearfix">
+        <div class="inner">
+          <h3 class="masthead-brand">URL Shortener</h3>
+          <nav>
+            <ul class="nav masthead-nav">
+              <li><a ui-sref="main">Home</a></li>
+              <li class="active"><a ui-sref="location">Locations</a></li>
+              <li><a ui-sref="userinfo">Users Info</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+
+      <div class="inner cover">
+        <div>
+          <h1 class="cover-heading"><strong>URL Shortener</strong></h1>
+          <p class="lead">El siguiente enlace no es seguro</p>
+          <a href="{{SafeBrowsingVM.url}}">
+            {{SafeBrowsingVM.url}}
+          </a>
+        </div>
+			</div>
+
+      <div class="mastfoot">
+        <div class="inner">
+          <p>Proyecto de la asignatura <a href="">Ingeniería web</a>, realizado por el <a href="">grupo 4</a>.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>

@@ -1,10 +1,14 @@
 package urlshortener.gr4.googlesafebrowsing;
 
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -15,11 +19,15 @@ import urlshortener.common.domain.googlesafebrowsing.RequestFormat;
 import urlshortener.common.domain.googlesafebrowsing.ResponseFormat;
 import urlshortener.common.domain.googlesafebrowsing.ThreatEntry;
 import urlshortener.common.domain.googlesafebrowsing.ThreatInfo;
+import urlshortener.gr4.web.UrlShortenerControllerWithLogs;
 
 public class SafeBrowsing {
 
+	private static final Logger logger = LoggerFactory.getLogger(UrlShortenerControllerWithLogs.class);
+	
     public SafeBrowsing() {}
 
+    @Async
     public boolean isSafe(String url) throws JsonProcessingException {
 
         String urlBase = "https://safebrowsing.googleapis.com/v4/threatMatches:find?key=AIzaSyCMQF934rfLzpVNkN64M9qB_V9N5RaessE";
@@ -35,28 +43,37 @@ public class SafeBrowsing {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity request= new HttpEntity(requestJson, headers );
 
-        System.out.println("\nREQUEST TO GOOGLE SAFE BROWSING:");
-        System.out.println(requestJson);
+        logger.info("\nREQUEST TO GOOGLE SAFE BROWSING:");
+        logger.info(requestJson);
         ResponseEntity<ResponseFormat> response = restTemplate.exchange(urlBase, HttpMethod.POST, request, ResponseFormat.class);
         String jsonRespuesta = mapper.writeValueAsString(response);
-        System.out.println("RESPONSE FROM  GOOGLE SAFE BROWSING:");
-        System.out.println(jsonRespuesta+"\n");
+        logger.info("RESPONSE FROM  GOOGLE SAFE BROWSING:");
+        logger.info(jsonRespuesta+"\n");
         
         boolean isSafe = false;
         
         if(response.getStatusCodeValue() == 200) {                        
             if(response.getBody().getMatches().isEmpty()) {
-                System.out.println("THE URL " + url + " IS SAFE");
+                logger.info("THE URL " + url + " IS SAFE");
                 isSafe = true;
             }
             else {
-                System.out.println("THE URL " + url + " IS UNSAFE");
+                logger.info("THE URL " + url + " IS UNSAFE");
             }
         }
         else
         {
-        	System.out.println("CONNECTION COULD NOT ESTABLISHED. CODE: "+response.getStatusCodeValue());
+        	logger.info("CONNECTION COULD NOT ESTABLISHED. CODE: "+response.getStatusCodeValue());
         }       
+        return isSafe;
+    }
+    
+    public static boolean CheckIsSafe(String url) throws JsonProcessingException
+    {
+    	SafeBrowsing sb = new SafeBrowsing();
+		boolean isSafe = true;
+        isSafe = sb.isSafe(url);
+        logger.info("The uri " + url + "is safe? " + isSafe);
         return isSafe;
     }
 }
