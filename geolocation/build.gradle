@@ -34,7 +34,7 @@ task npm(type: Exec) {
     outputs.dir "node_modules"
 
     println tasks.getByPath(':geolocation:npm').path
-    tasks.npmBin.execute()
+    //tasks.npmBin.execute()
 
 }
 
@@ -45,5 +45,5 @@ task start(type: Exec) {
 }
 
 dependencies {
-    tasks.npm.execute()
+    //tasks.npm.execute()
 }

@@ -21,8 +21,12 @@ function configStates($stateProvider, $urlRouterProvider) {
         },
         controller: 'SafeBrowsingCtrl as SafeBrowsingVM',
         templateUrl: 'app/SafeBrowsing/SafeBrowsing.html'
+      })
+      .state('userinfo', {
+        url: '/userinfo',
+        controller: 'UserInfoCtrl as infoVM',
+        templateUrl: 'app/userinfo/userinfo.html'
       });
-
      $urlRouterProvider.otherwise('main');
 
 };
