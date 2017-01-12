@@ -11,7 +11,16 @@ const routes = require('./routes');
 const app  = express();
 
 mongoose.Promise = bluebird;
-mongoose.connect(config.mongo.url);
+
+var MONGO_DB;
+var DOCKER_DB = process.env.DB_PORT;
+if ( DOCKER_DB ) {
+  MONGO_DB = DOCKER_DB.replace( 'tcp', 'mongodb' ) + '/geo-location-ip';
+} else {
+  MONGO_DB = process.env.MONGODB;
+}
+var retry = 0;
+mongoose.connect(MONGO_DB);
 
 app.use(helmet());
 app.use(bodyParser.urlencoded({ extended: true }));
