@@ -47,19 +47,12 @@ public class UrlShortenerController {
 		if (l != null) {
 			shortURLRepository.incCount(l);
 			System.out.println("COUNT: " + l.getCount());
-			createAndSaveClick(id, extractIP(request));
 			return createSuccessfulRedirectToResponse(l);
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
 
-	private void createAndSaveClick(String hash, String ip) {
-		Click cl = new Click(null, hash, new Date(System.currentTimeMillis()),
-				null, null, null, ip, null);
-		cl=clickRepository.save(cl);
-		LOG.info(cl!=null?"["+hash+"] saved with id ["+cl.getId()+"]":"["+hash+"] was not saved");
-	}
 
 	private String extractIP(HttpServletRequest request) {
 		return request.getRemoteAddr();

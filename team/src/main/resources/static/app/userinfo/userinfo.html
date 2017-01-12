@@ -9,19 +9,132 @@
           <h3 class="masthead-brand">URL Shortener</h3>
           <nav>
             <ul class="nav masthead-nav">
-              <li class="active"><a href="#">Home</a></li>
-              <li><a href="#">Features</a></li>
-              <li><a href="#">Contact</a></li>
+              <li><a ui-sref="main">Home</a></li>
+              <li><a ui-sref="location">Locations</a></li>
+              <li class="active"><a ui-sref="userinfo">Users Info</a></li>
             </ul>
           </nav>
         </div>
       </div>
 
-      <div class="inner cover">
-        <h1 class="cover-heading"><strong>Informacion</strong></h1>
-			</div>
+      <div class="row" ng-if="infoVM.findDiv">
+            <h1>Usuarios unicos: <span class="label label-info">{{ numUsuarios }}</span></h1>
+      	    <br>
+	    	<p class="lead">Inserte un patrÃ³n URI para información de los usuarios.</p>
+	    	<div class="input-group col-xs-12">
+		      <input type="text"
+		      			 class="form-control" 
+		      			 placeholder="Inserte un patron uri..."
+		      			 ng-model="infoVM.pattern">
+		      <span class="input-group-btn">
+		        <button class="btn btn-primary" 
+		        				type="button"
+		        				ng-click="infoVM.getInfo()">Ver</button>
+		      </span>
+		    </div>
 
-	
+      	<div class="col-xs-6"
+      			 style="margin-top: 10px; margin-bottom: 0px;">
+      		<div class="checkbox">
+					  <label><input type="checkbox" ng-model="infoVM.showFilterInit">Ver a partir de fecha determinada</label>
+					</div>
+					<div ng-if="infoVM.showFilterInit">
+	      		<div class="col-xs-12">
+	      			<p class="inner">Seleccione <strong>la fecha y hora de inicio:</strong></p>
+				      <p class="input-group">
+				        <input type="text" class="form-control" uib-datepicker-popup ng-model="infoVM.dateInit" 
+				        is-open="infoVM.opened" datepicker-options="{startingDay: 1}" ng-required="true" close-text="Cerrar" />
+				        <span class="input-group-btn">
+				        	<button type="button" class="btn btn-default" ng-click="infoVM.open()"><i class="glyphicon glyphicon-calendar"></i></button>
+				        </span>
+				      </p>
+				    </div>
+
+				    <div class="col-xs-12">
+			      	<div uib-timepicker ng-model="infoVM.dateInit" show-meridian="false"></div>
+			      </div>
+			    </div>
+		    </div>
+
+		  	<div class="col-xs-6"
+      			 style="margin-top: 10px; margin-bottom: 0px;">
+      		<div class="checkbox">
+					  <label><input type="checkbox" ng-model="infoVM.showFilterEnd">Ver hasta una fecha determinada</label>
+					</div>
+					<div ng-if="infoVM.showFilterEnd">
+	      		<div class="col-xs-12">
+	      			<p class="inner">Seleccione <strong>la fecha y hora de fin:</strong></p>
+				      <p class="input-group">
+				        <input type="text" class="form-control" uib-datepicker-popup ng-model="infoVM.dateEnd" 
+				        is-open="infoVM.opened2" datepicker-options="{startingDay: 1}" ng-required="true" close-text="Cerrar" />
+				        <span class="input-group-btn">
+				        	<button type="button" class="btn btn-default" ng-click="infoVM.open2()"><i class="glyphicon glyphicon-calendar"></i></button>
+				        </span>
+				      </p>
+				    </div>
+
+				    <div class="col-xs-12">
+			      	<div uib-timepicker ng-model="infoVM.dateEnd" show-meridian="false"></div>
+			      </div>
+			    </div>
+		    </div>
+		  </div>
+
+		  <div class="row">
+				<!-- tabla -->
+		  	<div class="panel panel-default mt-sm"
+		  			 ng-if="infoVM.clicks.length !== 0 && infoVM.tableBtn"
+		  			 style="margin-top: 10px">
+		  		<div class="panel-heading">
+				    <table class="table table-striped">
+				    	<thead>
+	              <tr>
+	                <th class="col-xs-1 text-center">#</th>
+	                <th class="col-xs-2 text-center">Hash</th>
+	                <th class="col-xs-2 text-center">IP</th>
+	                <th class="col-xs-3 text-center">Navegador</th>
+	                <th class="col-xs-2 text-center">Plataforma</th>
+	              </tr>
+	            </thead>
+	            <tbody>
+							  <tr ng-repeat="click in infoVM.clicks">
+							  	<!-- rowId -->
+			            <td class="col-xs-1 text-center">
+			              {{ ::click.id }}
+			            </td>
+			            <!-- /rowId -->
+
+			            <!-- hash -->
+			            <td class="col-xs-2 text-center">
+			              {{ ::click.hash }}
+			            </td>
+			            <!-- /hash -->
+
+			            <!-- ip -->
+			            <td class="col-xs-2 text-center">
+			              {{ ::click.ip }}
+			            </td>
+			            <!-- /ip -->
+
+			            <!-- browser -->
+			            <td class="col-xs-3 text-center">
+			              {{ ::click.browser }}
+			            </td>
+			            <!-- /browser -->
+
+			            <!-- platform -->
+			            <td class="col-xs-2 text-center">
+			              {{ ::click.platform }}
+			            </td>
+			            <!-- /platform -->
+
+			        	</tr>
+	            </tbody>
+						</table>
+					</div>
+				</div>
+				<!--/ tabla -->
+		  </div>
 
       <div class="mastfoot">
         <div class="inner">

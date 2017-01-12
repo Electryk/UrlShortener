@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.List;
 
@@ -161,6 +162,28 @@ public class ClickRepositoryImpl implements ClickRepository {
 			log.debug("When counting hash "+hash, e);
 		}
 		return -1L;
+	}
+	
+	@Override
+	public List<Click> listByPattern(String pattern, Timestamp dateInit, Timestamp dateEnd) {
+	  try {
+			System.out.println("ENTRA DENTRO DE LISTAR PATTERN CLICK");
+	    String patternNew = "%" + pattern + "%";
+	    return jdbc.query("SELECT * FROM click l, shorturl u WHERE u.target LIKE ? and l.hash = u.hash and l.created >= ? and l.created < ?",
+	    		new Object[] { patternNew, dateInit, dateEnd }, rowMapper);
+	  } catch (Exception e) {
+	    log.debug("When select for pattern " + pattern, e);
+	    return null;
+	  }
+	}
+	
+	@Override
+	public Integer getUniqueUsers() {
+		try {
+			return jdbc.queryForObject("SELECT COUNT(DISTINCT ip) FROM click", Integer.class);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 }
