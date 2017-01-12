@@ -55,9 +55,12 @@ public class BrowserOs {
 	}
 	
 	public String getVersion(HttpServletRequest request) {
-	    UserAgent userAgent = UserAgent.parseUserAgentString(request.getHeader("User-Agent"));
-	    Version browserVersion = userAgent.getBrowserVersion();
-	    String version = browserVersion.toString();
+		String version = "";
+		UserAgent userAgent = UserAgent.parseUserAgentString(request.getHeader("User-Agent"));
+		Version browserVersion = userAgent.getBrowserVersion();
+		if (browserVersion != null) {
+			version = browserVersion.toString();
+		}
 	    return version;
 		
 	}
