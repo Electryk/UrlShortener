@@ -17,7 +17,7 @@ var DOCKER_DB = process.env.DB_PORT;
 if ( DOCKER_DB ) {
   MONGO_DB = DOCKER_DB.replace( 'tcp', 'mongodb' ) + '/geo-location-ip';
 } else {
-  MONGO_DB = process.env.MONGODB;
+  MONGO_DB = config.mongo.url;
 }
 var retry = 0;
 mongoose.connect(MONGO_DB);
